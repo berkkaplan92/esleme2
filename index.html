@@ -1,543 +1,549 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Pika & Berk – V22 Kedi Tabelalı Eşleme</title>
-<style>
-:root{
-  --card-w:160px;
-  --card-h:200px;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  background:linear-gradient(to bottom right,#b3e5fc,#e1f5fe);
-  height:100vh;
-  overflow:hidden;
-  font-family:"Comic Sans MS",system-ui,sans-serif;
-  position:relative;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pika & Berk – V22.3 Tam Set</title>
+  <style>
+    :root {
+      --card-w: 160px;
+      --card-h: 200px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom right, #b3e5fc, #e1f5fe);
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Comic Sans MS", system-ui, sans-serif;
+      position: relative;
+    }
 
-/* Hayvan tabelalı yönerge */
-#instructionBox{
-  position:absolute;
-  top:10px;
-  left:10px;
-  width:260px;
-  padding-top:60px; /* hayvan için boşluk */
-  z-index:20;
-}
-#animalTop{
-  position:absolute;
-  top:-10px;
-  left:50%;
-  transform:translateX(-50%);
-  width:100px;
-  height:80px;
-  background:url("https://cdn.pixabay.com/photo/2017/01/31/20/26/cat-2022343_1280.png") center/contain no-repeat;
-  pointer-events:none;
-}
-#instructionPanel{
-  background:#fff8e1;
-  border:3px solid #f6c453;
-  border-radius:16px;
-  box-shadow:0 4px 8px rgba(0,0,0,.15);
-  padding:10px 14px;
-}
-#instructionPanel .title{
-  font-weight:700;
-  margin-bottom:4px;
-  text-transform:uppercase;
-}
-#instructionPanel .line{
-  font-size:13px;
-  margin-bottom:2px;
-  text-transform:uppercase;
-}
+    /* Yönerge sol üst */
+    #instructionBox {
+      position: absolute;
+      top: 50px;
+      left: 40px;
+      background: #fff9e6;
+      border: 3px solid #f6c453;
+      border-radius: 14px;
+      padding: 10px 14px;
+      box-shadow: 0 3px 8px rgba(0,0,0,.12);
+      z-index: 20;
+      min-width: 210px;
+    }
+    #instructionBox .title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    #instructionBox .line {
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      margin: 1px 0;
+    }
 
-/* üstteki sabit kartlar */
-.option-card{
-  width:var(--card-w);
-  height:var(--card-h);
-  background:#fff;
-  border:3px solid rgba(11,132,165,.4);
-  border-radius:16px;
-  box-shadow:0 4px 10px rgba(0,0,0,.15);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  position:absolute;
-  transition:all .35s ease;
-  user-select:none;
-  z-index:10;
-}
-#optionLeft{top:14%;left:18%;}
-#optionRight{top:14%;right:18%;}
-.option-card img{
-  width:100px;height:100px;
-  object-fit:contain;
-  margin-top:10px;
-  pointer-events:none;
-}
-.label{
-  font-weight:700;
-  text-transform:uppercase;
-  margin-top:8px;
-  text-align:center;
-}
+    /* üstteki sabit kartlar */
+    .option-card {
+      width: var(--card-w);
+      height: var(--card-h);
+      background: #fff;
+      border: 3px solid rgba(11,132,165,.4);
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: absolute;
+      transition: all .35s ease;
+      user-select: none;
+      z-index: 10;
+    }
+    /* birbirine biraz yaklaştırdık: 18% yerine 22% */
+    #optionLeft { top: 14%; left: 22%; }
+    #optionRight { top: 14%; right: 22%; }
 
-/* alttaki sürüklenen kart */
-#dragCard{
-  width:var(--card-w);
-  height:var(--card-h);
-  background:#fff;
-  border:3px solid rgba(11,132,165,.6);
-  border-radius:16px;
-  box-shadow:0 6px 10px rgba(0,0,0,.35);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  position:absolute;
-  bottom:18%;        /* biraz daha aşağı çekildi */
-  left:50%;
-  transform:translateX(-50%);
-  cursor:grab;
-  user-select:none;
-  touch-action:none;
-  z-index:200;
-  transition:box-shadow .15s ease,border-color .15s ease;
-}
-#dragCard img{
-  width:100px;height:100px;object-fit:contain;margin-top:10px;pointer-events:none;
-}
-.correct{border-color:#2ecc71!important;box-shadow:0 0 18px rgba(46,204,113,.9)!important;}
-.wrong{border-color:#e74c3c!important;box-shadow:0 0 18px rgba(231,76,60,.9)!important;}
+    .option-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-top: 10px;
+      pointer-events: none;
+    }
+    .label-tr {
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 6px;
+    }
+    .label-en {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 2px;
+      opacity: .8;
+    }
 
-/* SABİT sembol bar (karttan bağımsız!) */
-#poolBar{
-  position:fixed;
-  bottom:10%;           /* biraz daha aşağıya alındı */
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:6px;
-  background:rgba(255,255,255,.6);
-  padding:6px 10px;
-  border-radius:12px;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
-  z-index:150;
-}
-.pool-slot{
-  width:24px;height:24px;
-  background:rgba(255,255,255,.4);
-  border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-  opacity:.25;
-}
-.pool-slot.active{opacity:1;}
+    /* alttaki sürüklenen kart */
+    #dragCard {
+      width: var(--card-w);
+      height: var(--card-h);
+      background: #fff;
+      border: 3px solid rgba(11,132,165,.6);
+      border-radius: 16px;
+      box-shadow: 0 6px 10px rgba(0,0,0,.35);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: absolute;
+      bottom: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      z-index: 200;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    #dragCard img {
+      width: 100px; height: 100px; object-fit: contain; margin-top: 10px;
+    }
+    #dragCard.correct {
+      border-color: #2ecc71 !important;
+      box-shadow: 0 0 18px rgba(46,204,113,.9) !important;
+    }
+    #dragCard.wrong {
+      border-color: #e74c3c !important;
+      box-shadow: 0 0 18px rgba(231,76,60,.9) !important;
+    }
 
-/* sembol tahtası */
-#symbolBoard{
-  position:absolute;
-  bottom:20px;
-  right:20px;
-  width:280px;
-  height:130px;
-  background:url('https://cdn.pixabay.com/photo/2014/04/02/10/56/wood-306955_1280.png') center/cover no-repeat;
-  border-radius:16px;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  align-items:center;
-  padding:10px;
-  box-shadow:0 4px 10px rgba(0,0,0,.25);
-}
-.slot{
-  width:28px;height:28px;border-radius:8px;
-  background:rgba(255,255,255,.3);
-  margin:4px;font-size:22px;text-align:center;line-height:28px;
-  opacity:.25;transition:all .3s ease;cursor:pointer;
-}
-.slot.active{opacity:1;}
+    /* sağ alttaki ahşap sembol tahtası (8 slot) */
+    #symbolBoard {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 260px;
+      height: 110px;
+      background: url('https://cdn.pixabay.com/photo/2014/04/02/10/56/wood-306955_1280.png') center/cover no-repeat;
+      border-radius: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      padding: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.25);
+    }
+    .slot {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.25);
+      text-align: center;
+      line-height: 30px;
+      font-size: 22px;
+      opacity: .25;
+      transition: all .25s ease;
+    }
+    .slot.active {
+      opacity: 1;
+      transform: scale(1.05);
+    }
 
-/* uçan yıldız */
-#flyStar{
-  position:absolute;
-  width:60px;height:60px;
-  background:gold;border-radius:50%;
-  box-shadow:0 0 12px rgba(255,215,0,.9);
-  top:50%;left:50%;
-  transform:translate(-50%,-50%) scale(0);
-  opacity:0;
-  pointer-events:none;
-  z-index:999;
-  transition:all .25s ease;
-}
+    /* uçan yıldız */
+    #flyStar {
+      position: absolute;
+      width: 60px; height: 60px;
+      background: gold;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255,215,0,.9);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%) scale(0);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 999;
+      transition: all .25s ease;
+    }
 
-@media (max-width:540px){
-  #optionLeft{left:6%;}
-  #optionRight{right:6%;}
-  #symbolBoard{transform:scale(.85);right:4px;}
-}
-</style>
+    @media (max-width: 540px) {
+      #optionLeft { left: 8%; }
+      #optionRight { right: 8%; }
+      #instructionBox { left: 10px; top: 30px; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Hayvan tabelalı yönerge -->
-<div id="instructionBox">
-  <div id="animalTop"></div>
-  <div id="instructionPanel">
+  <!-- Yönerge -->
+  <div id="instructionBox">
     <div class="title">YÖNERGE :</div>
     <div class="line" id="line1">- EŞLE</div>
     <div class="line" id="line2">- AYNI OLANI EŞLE</div>
     <div class="line" id="line3">- ELMAYI EŞLE</div>
   </div>
-</div>
 
-<!-- üstte sabit kartlar -->
-<div class="option-card" id="optionLeft">
-  <img id="leftImg" src="">
-  <div class="label" id="leftLabel"></div>
-</div>
-<div class="option-card" id="optionRight">
-  <img id="rightImg" src="">
-  <div class="label" id="rightLabel"></div>
-</div>
+  <!-- üstteki iki seçenek -->
+  <div class="option-card" id="optionLeft">
+    <img id="leftImg" src="">
+    <div class="label-tr" id="leftTr"></div>
+    <div class="label-en" id="leftEn"></div>
+  </div>
+  <div class="option-card" id="optionRight">
+    <img id="rightImg" src="">
+    <div class="label-tr" id="rightTr"></div>
+    <div class="label-en" id="rightEn"></div>
+  </div>
 
-<!-- alttaki sürüklenen kart -->
-<div class="card" id="dragCard">
-  <img id="dragImg" src="">
-  <div class="label" id="dragLabel"></div>
-</div>
+  <!-- alttaki sürüklenen kart -->
+  <div id="dragCard">
+    <img id="dragImg" src="">
+    <div class="label-tr" id="dragTr"></div>
+    <div class="label-en" id="dragEn"></div>
+  </div>
 
-<!-- SABİT sembol seti -->
-<div id="poolBar">
-  <div class="pool-slot" id="p1"></div>
-  <div class="pool-slot" id="p2"></div>
-  <div class="pool-slot" id="p3"></div>
-  <div class="pool-slot" id="p4"></div>
-  <div class="pool-slot" id="p5"></div>
-  <div class="pool-slot" id="p6"></div>
-  <div class="pool-slot" id="p7"></div>
-  <div class="pool-slot" id="p8"></div>
-  <div class="pool-slot" id="p9"></div>
-  <div class="pool-slot" id="p10"></div>
-</div>
+  <!-- sembol tahtası -->
+  <div id="symbolBoard">
+    <div class="slot" id="s1"></div>
+    <div class="slot" id="s2"></div>
+    <div class="slot" id="s3"></div>
+    <div class="slot" id="s4"></div>
+    <div class="slot" id="s5"></div>
+    <div class="slot" id="s6"></div>
+    <div class="slot" id="s7"></div>
+    <div class="slot" id="s8"></div>
+  </div>
 
-<!-- sembol tahtası -->
-<div id="symbolBoard"></div>
+  <!-- uçan yıldız -->
+  <div id="flyStar"></div>
 
-<!-- uçan yıldız -->
-<div id="flyStar"></div>
+  <!-- Sesler -->
+  <audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf4d03054b.mp3"></audio>
+  <audio id="wrongSound"   src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3"></audio>
+  <!-- bunlar random pekiştireçler için TTS kullanacağız, ama istersen bu mp3’leri değiştirebilirsin -->
 
-<!-- sesler -->
-<audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf4d03054b.mp3"></audio>
-<audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3"></audio>
-<audio id="praise" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3"></audio>
+  <script>
+    // 50 nesnelik havuz (tr, en, dosya)
+    const ITEMS = [
+      // meyveler
+      {id:"elma", tr:"Elma", en:"Apple"},
+      {id:"muz", tr:"Muz", en:"Banana"},
+      {id:"armut", tr:"Armut", en:"Pear"},
+      {id:"uzum", tr:"Üzüm", en:"Grapes"},
+      {id:"ananas", tr:"Ananas", en:"Pineapple"},
+      {id:"cilek", tr:"Çilek", en:"Strawberry"},
+      {id:"karpuz", tr:"Karpuz", en:"Watermelon"},
+      {id:"kavun", tr:"Kavun", en:"Melon"},
+      {id:"portakal", tr:"Portakal", en:"Orange"},
+      {id:"kivi", tr:"Kivi", en:"Kiwi"},
+      // sebzeler
+      {id:"domates", tr:"Domates", en:"Tomato"},
+      {id:"salatalik", tr:"Salatalık", en:"Cucumber"},
+      {id:"biber", tr:"Biber", en:"Pepper"},
+      {id:"sarimsak", tr:"Sarımsak", en:"Garlic"},
+      {id:"sogan", tr:"Soğan", en:"Onion"},
+      {id:"brokoli", tr:"Brokoli", en:"Broccoli"},
+      {id:"havuc", tr:"Havuç", en:"Carrot"},
+      {id:"lahana", tr:"Lahana", en:"Cabbage"},
+      {id:"misir", tr:"Mısır", en:"Corn"},
+      {id:"patlican", tr:"Patlıcan", en:"Eggplant"},
+      // taşıtlar
+      {id:"kamyon", tr:"Kamyon", en:"Truck"},
+      {id:"araba", tr:"Araba", en:"Car"},
+      {id:"motosiklet", tr:"Motosiklet", en:"Motorcycle"},
+      {id:"bisiklet", tr:"Bisiklet", en:"Bicycle"},
+      {id:"gemi", tr:"Gemi", en:"Ship"},
+      {id:"helikopter", tr:"Helikopter", en:"Helicopter"},
+      {id:"ucak", tr:"Uçak", en:"Plane"},
+      {id:"tren", tr:"Tren", en:"Train"},
+      {id:"otobus", tr:"Otobüs", en:"Bus"},
+      {id:"itfaiye_arabasi", tr:"İtfaiye Arabası", en:"Fire Truck"},
+      // hayvanlar (20)
+      {id:"aslan", tr:"Aslan", en:"Lion"},
+      {id:"kaplan", tr:"Kaplan", en:"Tiger"},
+      {id:"kedi", tr:"Kedi", en:"Cat"},
+      {id:"kopek", tr:"Köpek", en:"Dog"},
+      {id:"inek", tr:"İnek", en:"Cow"},
+      {id:"at", tr:"At", en:"Horse"},
+      {id:"koyun", tr:"Koyun", en:"Sheep"},
+      {id:"keci", tr:"Keçi", en:"Goat"},
+      {id:"tavuk", tr:"Tavuk", en:"Chicken"},
+      {id:"ordek", tr:"Ördek", en:"Duck"},
+      {id:"kus", tr:"Kuş", en:"Bird"},
+      {id:"tavsan", tr:"Tavşan", en:"Rabbit"},
+      {id:"balik", tr:"Balık", en:"Fish"},
+      {id:"fil", tr:"Fil", en:"Elephant"},
+      {id:"ayi", tr:"Ayı", en:"Bear"},
+      {id:"maymun", tr:"Maymun", en:"Monkey"},
+      {id:"kurbaga", tr:"Kurbağa", en:"Frog"},
+      {id:"kaplumbaga", tr:"Kaplumbağa", en:"Turtle"},
+      {id:"domuz", tr:"Domuz", en:"Pig"},
+      {id:"yunus", tr:"Yunus", en:"Dolphin"},
+    ];
 
-<script>
-/* veri havuzu */
-const poolData=[
-  {id:"elma",tr:"Elma"},
-  {id:"muz",tr:"Muz"},
-  {id:"armut",tr:"Armut"},
-  {id:"patlican",tr:"Patlıcan"},
-  {id:"domates",tr:"Domates"},
-  {id:"sarimsak",tr:"Sarımsak"},
-  {id:"araba",tr:"Araba"},
-  {id:"otobus",tr:"Otobüs"},
-  {id:"ucak",tr:"Uçak"},
-  {id:"kopek",tr:"Köpek"}
-];
+    // elemanlar
+    const instructionLine3 = document.getElementById("line3");
+    const optionLeft = document.getElementById("optionLeft");
+    const optionRight = document.getElementById("optionRight");
+    const leftImg = document.getElementById("leftImg");
+    const rightImg = document.getElementById("rightImg");
+    const leftTr = document.getElementById("leftTr");
+    const rightTr = document.getElementById("rightTr");
+    const leftEn = document.getElementById("leftEn");
+    const rightEn = document.getElementById("rightEn");
 
-const optionLeft=document.getElementById("optionLeft");
-const optionRight=document.getElementById("optionRight");
-const leftImg=document.getElementById("leftImg");
-const rightImg=document.getElementById("rightImg");
-const leftLabel=document.getElementById("leftLabel");
-const rightLabel=document.getElementById("rightLabel");
-const dragCard=document.getElementById("dragCard");
-const dragImg=document.getElementById("dragImg");
-const dragLabel=document.getElementById("dragLabel");
+    const dragCard = document.getElementById("dragCard");
+    const dragImg = document.getElementById("dragImg");
+    const dragTr = document.getElementById("dragTr");
+    const dragEn = document.getElementById("dragEn");
 
-const poolSlots=[...document.querySelectorAll(".pool-slot")];
-const symbolBoard=document.getElementById("symbolBoard");
-const flyStar=document.getElementById("flyStar");
-const correctSound=document.getElementById("correctSound");
-const wrongSound=document.getElementById("wrongSound");
-const praiseSound=document.getElementById("praise");
+    const symbolBoard = document.getElementById("symbolBoard");
+    const slots = [...document.querySelectorAll(".slot")];
+    const flyStar = document.getElementById("flyStar");
+    const correctSound = document.getElementById("correctSound");
+    const wrongSound = document.getElementById("wrongSound");
 
-const line1=document.getElementById("line1");
-const line2=document.getElementById("line2");
-const line3=document.getElementById("line3");
+    // durumlar
+    let currentItem = null;
+    let wrongItem = null;
+    let attempt = 1;
+    let collected = 0;  // 0..8
+    const praiseTexts = ["Aferin", "Bravo", "Süpersin", "Harika gidiyorsun"];
 
-/* sembol tahtası oluştur */
-const boardSlots=[];
-for(let i=0;i<10;i++){
-  const s=document.createElement("div");
-  s.className="slot";
-  symbolBoard.appendChild(s);
-  boardSlots.push(s);
-}
+    // drag değişkenleri
+    let isDragging = false;
+    let startX=0,startY=0,startLeft=0,startTop=0;
 
-/* durumlar */
-let currentItem=null;
-let wrongItem=null;
-let attempt=1;
-let poolCount=10;
-let boardCount=0;
-let countingMode=false;
-let counted=0;
-let isDragging=false;
-let startX=0,startY=0,startLeft=0,startTop=0;
-
-/* pekiştireç sesleri */
-const praiseTexts=["Aferin","Bravo","Süpersin","Harika Gidiyorsun"];
-
-/* yardımcılar */
-function randomItem(){return poolData[Math.floor(Math.random()*poolData.length)]}
-function speakTR(text){
-  if(!("speechSynthesis" in window))return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="tr-TR";
-  speechSynthesis.speak(u);
-}
-function toAccusative(word){
-  const lower=word.toLowerCase("tr");
-  const vowels="aıoueiöü";
-  const last=lower.charAt(lower.length-1);
-  const isVowel=vowels.includes(last);
-  const lastVowel=(lower.match(/[aıoueöü]/g)||["a"]).slice(-1)[0];
-  let ek="ı";
-  if(["e","i","ö","ü"].includes(lastVowel)) ek="i";
-  if(["o","u"].includes(lastVowel)) ek="u";
-  if(["a","ı"].includes(lastVowel)) ek="ı";
-  if(["ö","ü"].includes(lastVowel)) ek="ü";
-  if(isVowel){
-    return word + "y" + ek;
-  }else{
-    if(last==="k" && (ek==="i"||ek==="ü")){
-      return word.slice(0,-1) + "ğ" + ek;
+    function randomItem() {
+      return ITEMS[Math.floor(Math.random() * ITEMS.length)];
     }
-    return word + ek;
-  }
-}
 
-/* sembol barını başlat */
-function initPoolBar(){
-  poolSlots.forEach(s=>{s.textContent="⭐";s.classList.add("active");});
-  poolCount=10;
-}
+    function toAccusative(word) {
+      const lower = word.toLowerCase("tr");
+      const vowels = "aıoueiöü";
+      const last = lower.charAt(lower.length - 1);
+      const isVowel = vowels.includes(last);
+      const lastVowel = (lower.match(/[aıoueöü]/g) || ["a"]).slice(-1)[0];
+      let ek = "ı";
+      if (["e","i","ö","ü"].includes(lastVowel)) ek = "i";
+      if (["o","u"].includes(lastVowel)) ek = "u";
+      if (["a","ı"].includes(lastVowel)) ek = "ı";
+      if (["ö","ü"].includes(lastVowel)) ek = "ü";
+      if (isVowel) {
+        return word + "y" + ek;
+      } else {
+        if (last === "k" && (ek === "i" || ek === "ü")) {
+          return word.slice(0,-1) + "ğ" + ek;
+        }
+        return word + ek;
+      }
+    }
 
-/* yeni soru yükle */
-function loadNew(){
-  currentItem=randomItem();
-  do{ wrongItem=randomItem(); }while(wrongItem.id===currentItem.id);
-  attempt=1;
-  renderQuestion(true);
-}
+    function updateInstruction() {
+      const acc = toAccusative(currentItem.tr).toUpperCase();
+      instructionLine3.textContent = "- " + acc + " EŞLE";
+    }
 
-/* yönergeyi güncelle */
-function updateInstruction(){
-  line1.textContent="- EŞLE";
-  line2.textContent="- AYNI OLANI EŞLE";
-  const acc=toAccusative(currentItem.tr);
-  line3.textContent="- " + acc.toUpperCase();
-}
+    function renderQuestion(shuffle=true) {
+      updateInstruction();
+      const correct = currentItem;
+      const wrong = wrongItem;
+      let arr = [
+        {slot:"left", data: correct},
+        {slot:"right", data: wrong}
+      ];
+      if (shuffle) arr.sort(()=>Math.random()-0.5);
 
-/* soruyu ekrana bas */
-function renderQuestion(shuffle){
-  updateInstruction();
-  const correct={id:currentItem.id,tr:currentItem.tr,img:`assets/${currentItem.id}.png`};
-  const wrong={id:wrongItem.id,tr:wrongItem.tr,img:`assets/${wrongItem.id}.png`};
-  let arr=[correct,wrong];
-  if(shuffle) arr.sort(()=>Math.random()-.5);
+      // sol
+      const leftData = arr[0].data;
+      leftImg.src = `assets/${leftData.id}.png`;
+      leftTr.textContent = leftData.tr.toUpperCase();
+      leftEn.textContent = leftData.en.toUpperCase();
+      leftImg.dataset.id = leftData.id;
 
-  leftImg.src=arr[0].img;leftImg.dataset.id=arr[0].id;leftLabel.textContent=arr[0].tr.toUpperCase();
-  rightImg.src=arr[1].img;rightImg.dataset.id=arr[1].id;rightLabel.textContent=arr[1].tr.toUpperCase();
+      // sağ
+      const rightData = arr[1].data;
+      rightImg.src = `assets/${rightData.id}.png`;
+      rightTr.textContent = rightData.tr.toUpperCase();
+      rightEn.textContent = rightData.en.toUpperCase();
+      rightImg.dataset.id = rightData.id;
 
-  dragImg.src=`assets/${currentItem.id}.png`;
-  dragLabel.textContent=currentItem.tr.toUpperCase();
-  resetDragPosition();
-}
+      // alttaki sürüklenen
+      dragImg.src = `assets/${currentItem.id}.png`;
+      dragTr.textContent = currentItem.tr.toUpperCase();
+      dragEn.textContent = currentItem.en.toUpperCase();
 
-/* drag pozisyon sıfırla */
-function resetDragPosition(){
-  dragCard.style.transition="all .25s ease";
-  dragCard.style.left="50%";
-  dragCard.style.bottom="18%";
-  dragCard.style.top="";
-  dragCard.style.transform="translateX(-50%)";
-}
-
-/* drag olayları */
-function dragStart(e){
-  e.preventDefault();
-  isDragging=true;
-  const p=e.touches?e.touches[0]:e;
-  startX=p.clientX;startY=p.clientY;
-  const rect=dragCard.getBoundingClientRect();
-  startLeft=rect.left;startTop=rect.top;
-  dragCard.style.transition="none";
-  dragCard.style.cursor="grabbing";
-
-  document.addEventListener("mousemove",dragging);
-  document.addEventListener("touchmove",dragging,{passive:false});
-  document.addEventListener("mouseup",dragEnd);
-  document.addEventListener("touchend",dragEnd);
-}
-function dragging(e){
-  if(!isDragging)return;
-  const p=e.touches?e.touches[0]:e;
-  const dx=p.clientX-startX;
-  const dy=p.clientY-startY;
-  dragCard.style.left=(startLeft+dx)+"px";
-  dragCard.style.top=(startTop+dy)+"px";
-  dragCard.style.transform="none";
-}
-function dragEnd(){
-  if(!isDragging)return;
-  isDragging=false;
-  dragCard.style.cursor="grab";
-  document.removeEventListener("mousemove",dragging);
-  document.removeEventListener("touchmove",dragging);
-  document.removeEventListener("mouseup",dragEnd);
-  document.removeEventListener("touchend",dragEnd);
-
-  const dRect=dragCard.getBoundingClientRect();
-  const lRect=optionLeft.getBoundingClientRect();
-  const rRect=optionRight.getBoundingClientRect();
-  const hitL=isOverlap(dRect,lRect);
-  const hitR=isOverlap(dRect,rRect);
-
-  if(hitL||hitR){
-    const chosen=hitL?leftImg.dataset.id:rightImg.dataset.id;
-    if(chosen===currentItem.id) handleCorrect();
-    else handleWrong();
-  }else{
-    resetDragPosition();
-  }
-}
-function isOverlap(a,b){
-  return !(a.right<b.left||a.left>b.right||a.bottom<b.top||a.top>b.bottom);
-}
-
-/* doğru / yanlış */
-function handleCorrect(){
-  dragCard.classList.add("correct");
-  correctSound.currentTime=0;
-  correctSound.play().catch(()=>{});
-  const msg=praiseTexts[Math.floor(Math.random()*praiseTexts.length)];
-  speakTR(msg);
-  moveOneSymbolToBoard();
-
-  if(attempt===1){
-    setTimeout(()=>{
-      dragCard.classList.remove("correct");
-      swapTopCards();
-      attempt=2;
       resetDragPosition();
-    },500);
-  }else{
-    setTimeout(()=>{
-      dragCard.classList.remove("correct");
-      loadNew();
-    },500);
-  }
-}
-
-function handleWrong(){
-  dragCard.classList.add("wrong");
-  wrongSound.currentTime=0;
-  wrongSound.play().catch(()=>{});
-  setTimeout(()=>{
-    dragCard.classList.remove("wrong");
-    resetDragPosition();
-  },500);
-}
-
-/* üst kartları yer değiştir */
-function swapTopCards(){
-  const tSrc=leftImg.src, tLabel=leftLabel.textContent, tId=leftImg.dataset.id;
-  leftImg.src=rightImg.src;leftLabel.textContent=rightLabel.textContent;leftImg.dataset.id=rightImg.dataset.id;
-  rightImg.src=tSrc;rightLabel.textContent=tLabel;rightImg.dataset.id=tId;
-}
-
-/* sembol taşı */
-function moveOneSymbolToBoard(){
-  if(poolCount<=0) return;
-  const idx=poolSlots.findIndex(s=>s.classList.contains("active"));
-  if(idx===-1) return;
-  poolSlots[idx].classList.remove("active");
-  poolSlots[idx].textContent="";
-  poolCount--;
-
-  flyStar.style.opacity=1;
-  flyStar.style.transform="translate(-50%,-50%) scale(1)";
-  setTimeout(()=>{
-    flyStar.style.opacity=0;
-    flyStar.style.transform="translate(-50%,-50%) scale(0)";
-  },300);
-
-  if(boardCount<10){
-    boardSlots[boardCount].textContent="⭐";
-    boardSlots[boardCount].classList.add("active");
-    boardCount++;
-  }
-
-  if(boardCount===10){
-    speakTR("Hadi sembolleri sayalım.");
-    countingMode=true;
-    counted=0;
-  }
-}
-
-/* tahtadan tıklayıp sayma */
-boardSlots.forEach((slot)=>{
-  slot.addEventListener("click",()=>{
-    if(!countingMode) return;
-    if(!slot.classList.contains("active")) return;
-
-    slot.classList.remove("active");
-    slot.textContent="";
-    boardCount--;
-    counted++;
-    const nums=["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
-    speakTR(nums[counted-1]);
-
-    const emptyIdx=poolSlots.findIndex(s=>!s.classList.contains("active"));
-    if(emptyIdx!==-1){
-      poolSlots[emptyIdx].classList.add("active");
-      poolSlots[emptyIdx].textContent="⭐";
-      poolCount++;
     }
 
-    if(counted===10){
+    function loadNew() {
+      currentItem = randomItem();
+      do {
+        wrongItem = randomItem();
+      } while (wrongItem.id === currentItem.id);
+      attempt = 1;
+      renderQuestion(true);
+    }
+
+    function resetDragPosition() {
+      dragCard.style.transition = "all .25s ease";
+      dragCard.style.left = "50%";
+      dragCard.style.bottom = "18%";
+      dragCard.style.top = "";
+      dragCard.style.transform = "translateX(-50%)";
+    }
+
+    // drag events
+    dragCard.addEventListener("mousedown", dragStart);
+    dragCard.addEventListener("touchstart", dragStart, {passive:false});
+
+    function dragStart(e) {
+      e.preventDefault();
+      isDragging = true;
+      const p = e.touches ? e.touches[0] : e;
+      startX = p.clientX;
+      startY = p.clientY;
+      const rect = dragCard.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      dragCard.style.transition = "none";
+      dragCard.style.cursor = "grabbing";
+
+      document.addEventListener("mousemove", dragging);
+      document.addEventListener("touchmove", dragging, {passive:false});
+      document.addEventListener("mouseup", dragEnd);
+      document.addEventListener("touchend", dragEnd);
+    }
+
+    function dragging(e) {
+      if (!isDragging) return;
+      const p = e.touches ? e.touches[0] : e;
+      const dx = p.clientX - startX;
+      const dy = p.clientY - startY;
+      dragCard.style.left = (startLeft + dx) + "px";
+      dragCard.style.top = (startTop + dy) + "px";
+      dragCard.style.transform = "none";
+    }
+
+    function dragEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      dragCard.style.cursor = "grab";
+      document.removeEventListener("mousemove", dragging);
+      document.removeEventListener("touchmove", dragging);
+      document.removeEventListener("mouseup", dragEnd);
+      document.removeEventListener("touchend", dragEnd);
+
+      const dRect = dragCard.getBoundingClientRect();
+      const lRect = optionLeft.getBoundingClientRect();
+      const rRect = optionRight.getBoundingClientClientRect ? optionRight.getBoundingClientClientRect() : optionRight.getBoundingClientRect();
+
+      const hitL = isOverlap(dRect, lRect);
+      const hitR = isOverlap(dRect, rRect);
+
+      if (hitL || hitR) {
+        const chosenId = hitL ? leftImg.dataset.id : rightImg.dataset.id;
+        if (chosenId === currentItem.id) {
+          handleCorrect();
+        } else {
+          handleWrong();
+        }
+      } else {
+        resetDragPosition();
+      }
+    }
+
+    function isOverlap(a, b) {
+      return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+    }
+
+    function speakTR(text) {
+      if (!("speechSynthesis" in window)) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "tr-TR";
+      window.speechSynthesis.speak(u);
+    }
+
+    function handleCorrect() {
+      dragCard.classList.add("correct");
+      correctSound.currentTime = 0;
+      correctSound.play().catch(()=>{});
+
+      // random pekiştireç
+      const msg = praiseTexts[Math.floor(Math.random() * praiseTexts.length)];
+      speakTR(msg);
+
+      // 1 sembol ekle
+      addSymbol();
+
+      if (attempt === 1) {
+        setTimeout(()=>{
+          dragCard.classList.remove("correct");
+          // kartları yer değiştir
+          swapTopCards();
+          attempt = 2;
+          resetDragPosition();
+        }, 500);
+      } else {
+        setTimeout(()=>{
+          dragCard.classList.remove("correct");
+          loadNew();
+        }, 500);
+      }
+    }
+
+    function handleWrong() {
+      dragCard.classList.add("wrong");
+      wrongSound.currentTime = 0;
+      wrongSound.play().catch(()=>{});
       setTimeout(()=>{
-        speakTR("Aferin, tüm sembolleri topladın.");
-        praiseSound.play().catch(()=>{});
-        boardSlots.forEach(b=>{b.textContent="";b.classList.remove("active");});
-        boardCount=0;
-        countingMode=false;
-        counted=0;
-        initPoolBar();
-      },700);
+        dragCard.classList.remove("wrong");
+        resetDragPosition();
+      }, 500);
     }
-  });
-});
 
-/* olaylar */
-dragCard.addEventListener("mousedown",dragStart);
-dragCard.addEventListener("touchstart",dragStart,{passive:false});
+    function swapTopCards() {
+      // sol ile sağın içeriklerini değiştir
+      const lsrc = leftImg.src;
+      const lid = leftImg.dataset.id;
+      const ltr = leftTr.textContent;
+      const len = leftEn.textContent;
 
-window.addEventListener("load",()=>{
-  initPoolBar();
-  loadNew();
-});
-</script>
+      leftImg.src = rightImg.src;
+      leftImg.dataset.id = rightImg.dataset.id;
+      leftTr.textContent = rightTr.textContent;
+      leftEn.textContent = rightEn.textContent;
+
+      rightImg.src = lsrc;
+      rightImg.dataset.id = lid;
+      rightTr.textContent = ltr;
+      rightEn.textContent = len;
+    }
+
+    function addSymbol() {
+      if (collected >= 8) return;
+      // animasyon
+      flyStar.style.opacity = 1;
+      flyStar.style.transform = "translate(-50%,-50%) scale(1)";
+      setTimeout(()=>{
+        flyStar.style.opacity = 0;
+        flyStar.style.transform = "translate(-50%,-50%) scale(0)";
+      }, 300);
+
+      slots[collected].textContent = "⭐";
+      slots[collected].classList.add("active");
+      collected++;
+
+      if (collected === 8) {
+        setTimeout(()=>{
+          speakTR("Aferin sana! Tüm sembolleri topladın.");
+        }, 700);
+      }
+    }
+
+    window.addEventListener("load", ()=>{
+      loadNew();
+    });
+  </script>
 </body>
 </html>
