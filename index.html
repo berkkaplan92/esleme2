@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Pika & Berk – V22 Kedi Tabelalı Eşleme</title>
+<title>Pika & Berk – V23 Görsel Tabelalı Eşleme</title>
 <style>
-:root{
-  --card-w:160px;
-  --card-h:200px;
-}
+:root{--card-w:160px;--card-h:200px;}
 *{box-sizing:border-box;}
 body{
   margin:0;
@@ -19,24 +16,23 @@ body{
   position:relative;
 }
 
-/* Hayvan tabelalı yönerge */
+/* 🐻 Hayvan tabelalı yönerge */
 #instructionBox{
   position:absolute;
-  top:10px;
-  left:10px;
+  top:20px;
+  left:20px;
   width:260px;
-  padding-top:60px; /* hayvan için boşluk */
   z-index:20;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 #animalTop{
-  position:absolute;
-  top:-10px;
-  left:50%;
-  transform:translateX(-50%);
-  width:100px;
-  height:80px;
-  background:url("https://cdn.pixabay.com/photo/2017/01/31/20/26/cat-2022343_1280.png") center/contain no-repeat;
+  width:120px;
+  height:100px;
+  background:url("https://cdn.vectorstock.com/i/1000v/39/97/cute-teddy-bear-cartoon-with-blank-sign-vector-41083997.jpg") center/contain no-repeat;
   pointer-events:none;
+  margin-bottom:-15px;
 }
 #instructionPanel{
   background:#fff8e1;
@@ -44,6 +40,7 @@ body{
   border-radius:16px;
   box-shadow:0 4px 8px rgba(0,0,0,.15);
   padding:10px 14px;
+  width:100%;
 }
 #instructionPanel .title{
   font-weight:700;
@@ -56,7 +53,7 @@ body{
   text-transform:uppercase;
 }
 
-/* üstteki sabit kartlar */
+/* Kartlar */
 .option-card{
   width:var(--card-w);
   height:var(--card-h);
@@ -79,7 +76,6 @@ body{
   width:100px;height:100px;
   object-fit:contain;
   margin-top:10px;
-  pointer-events:none;
 }
 .label{
   font-weight:700;
@@ -88,7 +84,7 @@ body{
   text-align:center;
 }
 
-/* alttaki sürüklenen kart */
+/* Sürüklenen kart */
 #dragCard{
   width:var(--card-w);
   height:var(--card-h);
@@ -101,25 +97,22 @@ body{
   align-items:center;
   justify-content:flex-start;
   position:absolute;
-  bottom:18%;        /* biraz daha aşağı çekildi */
+  bottom:18%;
   left:50%;
   transform:translateX(-50%);
   cursor:grab;
-  user-select:none;
   touch-action:none;
   z-index:200;
   transition:box-shadow .15s ease,border-color .15s ease;
 }
-#dragCard img{
-  width:100px;height:100px;object-fit:contain;margin-top:10px;pointer-events:none;
-}
+#dragCard img{width:100px;height:100px;object-fit:contain;margin-top:10px;}
 .correct{border-color:#2ecc71!important;box-shadow:0 0 18px rgba(46,204,113,.9)!important;}
 .wrong{border-color:#e74c3c!important;box-shadow:0 0 18px rgba(231,76,60,.9)!important;}
 
-/* SABİT sembol bar (karttan bağımsız!) */
+/* 💫 Sembol bar */
 #poolBar{
   position:fixed;
-  bottom:10%;           /* biraz daha aşağıya alındı */
+  bottom:6%;
   left:50%;
   transform:translateX(-50%);
   display:flex;
@@ -140,7 +133,7 @@ body{
 }
 .pool-slot.active{opacity:1;}
 
-/* sembol tahtası */
+/* Sembol tahtası */
 #symbolBoard{
   position:absolute;
   bottom:20px;
@@ -164,30 +157,19 @@ body{
 }
 .slot.active{opacity:1;}
 
-/* uçan yıldız */
 #flyStar{
-  position:absolute;
-  width:60px;height:60px;
-  background:gold;border-radius:50%;
+  position:absolute;width:60px;height:60px;background:gold;border-radius:50%;
   box-shadow:0 0 12px rgba(255,215,0,.9);
   top:50%;left:50%;
   transform:translate(-50%,-50%) scale(0);
-  opacity:0;
-  pointer-events:none;
-  z-index:999;
+  opacity:0;pointer-events:none;z-index:999;
   transition:all .25s ease;
-}
-
-@media (max-width:540px){
-  #optionLeft{left:6%;}
-  #optionRight{right:6%;}
-  #symbolBoard{transform:scale(.85);right:4px;}
 }
 </style>
 </head>
 <body>
 
-<!-- Hayvan tabelalı yönerge -->
+<!-- 🐻 Yönerge -->
 <div id="instructionBox">
   <div id="animalTop"></div>
   <div id="instructionPanel">
@@ -198,49 +180,36 @@ body{
   </div>
 </div>
 
-<!-- üstte sabit kartlar -->
+<!-- Kartlar -->
 <div class="option-card" id="optionLeft">
-  <img id="leftImg" src="">
-  <div class="label" id="leftLabel"></div>
+  <img id="leftImg" src=""><div class="label" id="leftLabel"></div>
 </div>
 <div class="option-card" id="optionRight">
-  <img id="rightImg" src="">
-  <div class="label" id="rightLabel"></div>
+  <img id="rightImg" src=""><div class="label" id="rightLabel"></div>
 </div>
-
-<!-- alttaki sürüklenen kart -->
 <div class="card" id="dragCard">
-  <img id="dragImg" src="">
-  <div class="label" id="dragLabel"></div>
+  <img id="dragImg" src=""><div class="label" id="dragLabel"></div>
 </div>
 
-<!-- SABİT sembol seti -->
+<!-- Sembol Bar & Tahta -->
 <div id="poolBar">
-  <div class="pool-slot" id="p1"></div>
-  <div class="pool-slot" id="p2"></div>
-  <div class="pool-slot" id="p3"></div>
-  <div class="pool-slot" id="p4"></div>
-  <div class="pool-slot" id="p5"></div>
-  <div class="pool-slot" id="p6"></div>
-  <div class="pool-slot" id="p7"></div>
-  <div class="pool-slot" id="p8"></div>
-  <div class="pool-slot" id="p9"></div>
-  <div class="pool-slot" id="p10"></div>
+  <div class="pool-slot" id="p1"></div><div class="pool-slot" id="p2"></div>
+  <div class="pool-slot" id="p3"></div><div class="pool-slot" id="p4"></div>
+  <div class="pool-slot" id="p5"></div><div class="pool-slot" id="p6"></div>
+  <div class="pool-slot" id="p7"></div><div class="pool-slot" id="p8"></div>
+  <div class="pool-slot" id="p9"></div><div class="pool-slot" id="p10"></div>
 </div>
 
-<!-- sembol tahtası -->
 <div id="symbolBoard"></div>
-
-<!-- uçan yıldız -->
 <div id="flyStar"></div>
 
-<!-- sesler -->
+<!-- Sesler -->
 <audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf4d03054b.mp3"></audio>
 <audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3"></audio>
 <audio id="praise" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3"></audio>
 
 <script>
-/* veri havuzu */
+/* Nesne Havuzu */
 const poolData=[
   {id:"elma",tr:"Elma"},
   {id:"muz",tr:"Muz"},
@@ -254,290 +223,53 @@ const poolData=[
   {id:"kopek",tr:"Köpek"}
 ];
 
-const optionLeft=document.getElementById("optionLeft");
-const optionRight=document.getElementById("optionRight");
-const leftImg=document.getElementById("leftImg");
-const rightImg=document.getElementById("rightImg");
-const leftLabel=document.getElementById("leftLabel");
-const rightLabel=document.getElementById("rightLabel");
-const dragCard=document.getElementById("dragCard");
-const dragImg=document.getElementById("dragImg");
-const dragLabel=document.getElementById("dragLabel");
-
+const line3=document.getElementById("line3");
+const leftImg=document.getElementById("leftImg"), rightImg=document.getElementById("rightImg");
+const leftLabel=document.getElementById("leftLabel"), rightLabel=document.getElementById("rightLabel");
+const dragCard=document.getElementById("dragCard"), dragImg=document.getElementById("dragImg"), dragLabel=document.getElementById("dragLabel");
 const poolSlots=[...document.querySelectorAll(".pool-slot")];
+const boardSlots=[];
 const symbolBoard=document.getElementById("symbolBoard");
 const flyStar=document.getElementById("flyStar");
-const correctSound=document.getElementById("correctSound");
-const wrongSound=document.getElementById("wrongSound");
-const praiseSound=document.getElementById("praise");
+for(let i=0;i<10;i++){let s=document.createElement("div");s.className="slot";symbolBoard.appendChild(s);boardSlots.push(s);}
 
-const line1=document.getElementById("line1");
-const line2=document.getElementById("line2");
-const line3=document.getElementById("line3");
-
-/* sembol tahtası oluştur */
-const boardSlots=[];
-for(let i=0;i<10;i++){
-  const s=document.createElement("div");
-  s.className="slot";
-  symbolBoard.appendChild(s);
-  boardSlots.push(s);
-}
-
-/* durumlar */
-let currentItem=null;
-let wrongItem=null;
-let attempt=1;
-let poolCount=10;
-let boardCount=0;
-let countingMode=false;
-let counted=0;
-let isDragging=false;
-let startX=0,startY=0,startLeft=0,startTop=0;
-
-/* pekiştireç sesleri */
-const praiseTexts=["Aferin","Bravo","Süpersin","Harika Gidiyorsun"];
-
-/* yardımcılar */
+let currentItem=null, wrongItem=null, attempt=1, boardCount=0, countingMode=false, counted=0;
+const praiseTexts=["Aferin","Bravo","Süpersin","Harika gidiyorsun"];
 function randomItem(){return poolData[Math.floor(Math.random()*poolData.length)]}
-function speakTR(text){
-  if(!("speechSynthesis" in window))return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="tr-TR";
-  speechSynthesis.speak(u);
-}
-function toAccusative(word){
-  const lower=word.toLowerCase("tr");
-  const vowels="aıoueiöü";
-  const last=lower.charAt(lower.length-1);
-  const isVowel=vowels.includes(last);
-  const lastVowel=(lower.match(/[aıoueöü]/g)||["a"]).slice(-1)[0];
-  let ek="ı";
-  if(["e","i","ö","ü"].includes(lastVowel)) ek="i";
-  if(["o","u"].includes(lastVowel)) ek="u";
-  if(["a","ı"].includes(lastVowel)) ek="ı";
-  if(["ö","ü"].includes(lastVowel)) ek="ü";
-  if(isVowel){
-    return word + "y" + ek;
-  }else{
-    if(last==="k" && (ek==="i"||ek==="ü")){
-      return word.slice(0,-1) + "ğ" + ek;
-    }
-    return word + ek;
-  }
-}
+function speakTR(t){if(!("speechSynthesis"in window))return;const u=new SpeechSynthesisUtterance(t);u.lang="tr-TR";speechSynthesis.speak(u);}
+function toAccusative(w){const v="aıoueiöü",l=w.toLowerCase("tr"),h=l.slice(-1),iv=v.includes(h);const lv=(l.match(/[aıoueöü]/g)||["a"]).slice(-1)[0];let e="ı";if(["e","i","ö","ü"].includes(lv))e="i";if(["o","u"].includes(lv))e="u";if(["a","ı"].includes(lv))e="ı";if(["ö","ü"].includes(lv))e="ü";if(iv)return w+"y"+e;return h==="k"&&(e==="i"||e==="ü")?w.slice(0,-1)+"ğ"+e:w+e;}
 
-/* sembol barını başlat */
-function initPoolBar(){
-  poolSlots.forEach(s=>{s.textContent="⭐";s.classList.add("active");});
-  poolCount=10;
-}
+function initPoolBar(){poolSlots.forEach(s=>{s.textContent="⭐";s.classList.add("active");});}
+function loadNew(){currentItem=randomItem();do{wrongItem=randomItem();}while(wrongItem.id===currentItem.id);attempt=1;renderQuestion(true);}
+function updateInstruction(){const acc=toAccusative(currentItem.tr).toUpperCase();line3.textContent=`- ${acc} EŞLE`;}
+function renderQuestion(sh){updateInstruction();const c={id:currentItem.id,tr:currentItem.tr,img:`assets/${currentItem.id}.png`},w={id:wrongItem.id,tr:wrongItem.tr,img:`assets/${wrongItem.id}.png`};let arr=[c,w];if(sh)arr.sort(()=>Math.random()-.5);
+leftImg.src=arr[0].img;leftImg.dataset.id=arr[0].id;leftLabel.textContent=arr[0].tr.toUpperCase();
+rightImg.src=arr[1].img;rightImg.dataset.id=arr[1].id;rightLabel.textContent=arr[1].tr.toUpperCase();
+dragImg.src=`assets/${currentItem.id}.png`;dragLabel.textContent=currentItem.tr.toUpperCase();resetDragPosition();}
 
-/* yeni soru yükle */
-function loadNew(){
-  currentItem=randomItem();
-  do{ wrongItem=randomItem(); }while(wrongItem.id===currentItem.id);
-  attempt=1;
-  renderQuestion(true);
-}
+function resetDragPosition(){dragCard.style.transition="all .25s";dragCard.style.left="50%";dragCard.style.bottom="18%";dragCard.style.transform="translateX(-50%)";}
+function isOverlap(a,b){return!(a.right<b.left||a.left>b.right||a.bottom<b.top||a.top>b.bottom);}
+function handleCorrect(){const msg=praiseTexts[Math.floor(Math.random()*praiseTexts.length)];speakTR(msg);moveSymbol();if(attempt===1){setTimeout(()=>{swapCards();attempt=2;resetDragPosition();},500);}else setTimeout(()=>{loadNew();},500);}
+function moveSymbol(){const idx=poolSlots.findIndex(s=>s.classList.contains("active"));if(idx===-1)return;poolSlots[idx].classList.remove("active");poolSlots[idx].textContent="";
+flyStar.style.opacity=1;flyStar.style.transform="translate(-50%,-50%) scale(1)";
+setTimeout(()=>{flyStar.style.opacity=0;flyStar.style.transform="translate(-50%,-50%) scale(0)";},300);
+if(boardCount<10){boardSlots[boardCount].textContent="⭐";boardSlots[boardCount].classList.add("active");boardCount++;}
+if(boardCount===10){speakTR("Hadi sembolleri sayalım.");countingMode=true;counted=0;}}
 
-/* yönergeyi güncelle */
-function updateInstruction(){
-  line1.textContent="- EŞLE";
-  line2.textContent="- AYNI OLANI EŞLE";
-  const acc=toAccusative(currentItem.tr);
-  line3.textContent="- " + acc.toUpperCase();
-}
+function swapCards(){[leftImg.src,rightImg.src]=[rightImg.src,leftImg.src];[leftImg.dataset.id,rightImg.dataset.id]=[rightImg.dataset.id,leftImg.dataset.id];[leftLabel.textContent,rightLabel.textContent]=[rightLabel.textContent,leftLabel.textContent];}
+boardSlots.forEach((s)=>{s.addEventListener("click",()=>{if(!countingMode||!s.classList.contains("active"))return;s.classList.remove("active");s.textContent="";boardCount--;counted++;
+const nums=["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];speakTR(nums[counted-1]);
+if(counted===10){setTimeout(()=>{speakTR("Aferin, tüm sembolleri topladın.");boardSlots.forEach(b=>{b.textContent="";b.classList.remove("active");});boardCount=0;countingMode=false;counted=0;initPoolBar();},700);}});});
+dragCard.onmousedown=e=>dragStart(e);dragCard.ontouchstart=e=>dragStart(e,{passive:false});
+let isDragging=false,sX=0,sY=0,sL=0,sT=0;
+function dragStart(e){e.preventDefault();isDragging=true;const p=e.touches?e.touches[0]:e;sX=p.clientX;sY=p.clientY;const r=dragCard.getBoundingClientRect();sL=r.left;sT=r.top;
+document.onmousemove=dragging;document.onmouseup=dragEnd;document.ontouchmove=dragging;document.ontouchend=dragEnd;}
+function dragging(e){if(!isDragging)return;const p=e.touches?e.touches[0]:e;const dx=p.clientX-sX,dy=p.clientY-sY;dragCard.style.left=(sL+dx)+"px";dragCard.style.top=(sT+dy)+"px";dragCard.style.transform="none";}
+function dragEnd(){if(!isDragging)return;isDragging=false;document.onmousemove=document.onmouseup=document.ontouchmove=document.ontouchend=null;
+const d=dragCard.getBoundingClientRect(),l=leftImg.getBoundingClientRect(),r=rightImg.getBoundingClientRect();const hitL=isOverlap(d,l),hitR=isOverlap(d,r);
+if(hitL||hitR){const chosen=hitL?leftImg.dataset.id:rightImg.dataset.id;if(chosen===currentItem.id)handleCorrect();else resetDragPosition();}else resetDragPosition();}
 
-/* soruyu ekrana bas */
-function renderQuestion(shuffle){
-  updateInstruction();
-  const correct={id:currentItem.id,tr:currentItem.tr,img:`assets/${currentItem.id}.png`};
-  const wrong={id:wrongItem.id,tr:wrongItem.tr,img:`assets/${wrongItem.id}.png`};
-  let arr=[correct,wrong];
-  if(shuffle) arr.sort(()=>Math.random()-.5);
-
-  leftImg.src=arr[0].img;leftImg.dataset.id=arr[0].id;leftLabel.textContent=arr[0].tr.toUpperCase();
-  rightImg.src=arr[1].img;rightImg.dataset.id=arr[1].id;rightLabel.textContent=arr[1].tr.toUpperCase();
-
-  dragImg.src=`assets/${currentItem.id}.png`;
-  dragLabel.textContent=currentItem.tr.toUpperCase();
-  resetDragPosition();
-}
-
-/* drag pozisyon sıfırla */
-function resetDragPosition(){
-  dragCard.style.transition="all .25s ease";
-  dragCard.style.left="50%";
-  dragCard.style.bottom="18%";
-  dragCard.style.top="";
-  dragCard.style.transform="translateX(-50%)";
-}
-
-/* drag olayları */
-function dragStart(e){
-  e.preventDefault();
-  isDragging=true;
-  const p=e.touches?e.touches[0]:e;
-  startX=p.clientX;startY=p.clientY;
-  const rect=dragCard.getBoundingClientRect();
-  startLeft=rect.left;startTop=rect.top;
-  dragCard.style.transition="none";
-  dragCard.style.cursor="grabbing";
-
-  document.addEventListener("mousemove",dragging);
-  document.addEventListener("touchmove",dragging,{passive:false});
-  document.addEventListener("mouseup",dragEnd);
-  document.addEventListener("touchend",dragEnd);
-}
-function dragging(e){
-  if(!isDragging)return;
-  const p=e.touches?e.touches[0]:e;
-  const dx=p.clientX-startX;
-  const dy=p.clientY-startY;
-  dragCard.style.left=(startLeft+dx)+"px";
-  dragCard.style.top=(startTop+dy)+"px";
-  dragCard.style.transform="none";
-}
-function dragEnd(){
-  if(!isDragging)return;
-  isDragging=false;
-  dragCard.style.cursor="grab";
-  document.removeEventListener("mousemove",dragging);
-  document.removeEventListener("touchmove",dragging);
-  document.removeEventListener("mouseup",dragEnd);
-  document.removeEventListener("touchend",dragEnd);
-
-  const dRect=dragCard.getBoundingClientRect();
-  const lRect=optionLeft.getBoundingClientRect();
-  const rRect=optionRight.getBoundingClientRect();
-  const hitL=isOverlap(dRect,lRect);
-  const hitR=isOverlap(dRect,rRect);
-
-  if(hitL||hitR){
-    const chosen=hitL?leftImg.dataset.id:rightImg.dataset.id;
-    if(chosen===currentItem.id) handleCorrect();
-    else handleWrong();
-  }else{
-    resetDragPosition();
-  }
-}
-function isOverlap(a,b){
-  return !(a.right<b.left||a.left>b.right||a.bottom<b.top||a.top>b.bottom);
-}
-
-/* doğru / yanlış */
-function handleCorrect(){
-  dragCard.classList.add("correct");
-  correctSound.currentTime=0;
-  correctSound.play().catch(()=>{});
-  const msg=praiseTexts[Math.floor(Math.random()*praiseTexts.length)];
-  speakTR(msg);
-  moveOneSymbolToBoard();
-
-  if(attempt===1){
-    setTimeout(()=>{
-      dragCard.classList.remove("correct");
-      swapTopCards();
-      attempt=2;
-      resetDragPosition();
-    },500);
-  }else{
-    setTimeout(()=>{
-      dragCard.classList.remove("correct");
-      loadNew();
-    },500);
-  }
-}
-
-function handleWrong(){
-  dragCard.classList.add("wrong");
-  wrongSound.currentTime=0;
-  wrongSound.play().catch(()=>{});
-  setTimeout(()=>{
-    dragCard.classList.remove("wrong");
-    resetDragPosition();
-  },500);
-}
-
-/* üst kartları yer değiştir */
-function swapTopCards(){
-  const tSrc=leftImg.src, tLabel=leftLabel.textContent, tId=leftImg.dataset.id;
-  leftImg.src=rightImg.src;leftLabel.textContent=rightLabel.textContent;leftImg.dataset.id=rightImg.dataset.id;
-  rightImg.src=tSrc;rightLabel.textContent=tLabel;rightImg.dataset.id=tId;
-}
-
-/* sembol taşı */
-function moveOneSymbolToBoard(){
-  if(poolCount<=0) return;
-  const idx=poolSlots.findIndex(s=>s.classList.contains("active"));
-  if(idx===-1) return;
-  poolSlots[idx].classList.remove("active");
-  poolSlots[idx].textContent="";
-  poolCount--;
-
-  flyStar.style.opacity=1;
-  flyStar.style.transform="translate(-50%,-50%) scale(1)";
-  setTimeout(()=>{
-    flyStar.style.opacity=0;
-    flyStar.style.transform="translate(-50%,-50%) scale(0)";
-  },300);
-
-  if(boardCount<10){
-    boardSlots[boardCount].textContent="⭐";
-    boardSlots[boardCount].classList.add("active");
-    boardCount++;
-  }
-
-  if(boardCount===10){
-    speakTR("Hadi sembolleri sayalım.");
-    countingMode=true;
-    counted=0;
-  }
-}
-
-/* tahtadan tıklayıp sayma */
-boardSlots.forEach((slot)=>{
-  slot.addEventListener("click",()=>{
-    if(!countingMode) return;
-    if(!slot.classList.contains("active")) return;
-
-    slot.classList.remove("active");
-    slot.textContent="";
-    boardCount--;
-    counted++;
-    const nums=["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
-    speakTR(nums[counted-1]);
-
-    const emptyIdx=poolSlots.findIndex(s=>!s.classList.contains("active"));
-    if(emptyIdx!==-1){
-      poolSlots[emptyIdx].classList.add("active");
-      poolSlots[emptyIdx].textContent="⭐";
-      poolCount++;
-    }
-
-    if(counted===10){
-      setTimeout(()=>{
-        speakTR("Aferin, tüm sembolleri topladın.");
-        praiseSound.play().catch(()=>{});
-        boardSlots.forEach(b=>{b.textContent="";b.classList.remove("active");});
-        boardCount=0;
-        countingMode=false;
-        counted=0;
-        initPoolBar();
-      },700);
-    }
-  });
-});
-
-/* olaylar */
-dragCard.addEventListener("mousedown",dragStart);
-dragCard.addEventListener("touchstart",dragStart,{passive:false});
-
-window.addEventListener("load",()=>{
-  initPoolBar();
-  loadNew();
-});
+window.onload=()=>{initPoolBar();loadNew();};
 </script>
 </body>
 </html>
