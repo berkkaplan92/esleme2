@@ -2,9 +2,16 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>V17 – 2 Seçenekli Sürükle Bırak</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Özel Eğitim Eşleme – Pika & Berk</title>
   <style>
+    :root {
+      --card-w: 160px;
+      --card-h: 200px;
+    }
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
       background: linear-gradient(to bottom right, #b3e5fc, #e1f5fe);
@@ -12,6 +19,30 @@
       overflow: hidden;
       font-family: "Comic Sans MS", system-ui, sans-serif;
       position: relative;
+    }
+
+    /* Splash */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #ffe082, #ffcc80);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      animation: fadeOut 0.5s ease 2.2s forwards;
+    }
+    #splash h1 {
+      font-size: 26px;
+      margin: 0;
+    }
+    #splash p {
+      margin-top: 8px;
+      font-weight: 700;
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
     }
 
     /* Yönerge */
@@ -25,13 +56,13 @@
       font-weight: 700;
       text-transform: uppercase;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-      z-index: 1000;
+      z-index: 10;
     }
 
-    /* Üstteki 2 sabit kart */
+    /* Üst kartlar */
     .option-card {
-      width: 160px;
-      height: 200px;
+      width: var(--card-w);
+      height: var(--card-h);
       background: #fff;
       border: 3px solid rgba(11, 132, 165, 0.4);
       border-radius: 16px;
@@ -45,17 +76,14 @@
       user-select: none;
       z-index: 10;
     }
-
     #optionLeft {
       top: 14%;
-      left: 20%;
+      left: 18%;
     }
-
     #optionRight {
       top: 14%;
-      right: 20%;
+      right: 18%;
     }
-
     .option-card img {
       width: 100px;
       height: 100px;
@@ -70,10 +98,10 @@
       text-align: center;
     }
 
-    /* Alttaki sürüklenen kart */
+    /* Altta sürüklenen kart */
     #dragCard {
-      width: 160px;
-      height: 200px;
+      width: var(--card-w);
+      height: var(--card-h);
       background: #fff;
       border: 3px solid rgba(11, 132, 165, 0.6);
       border-radius: 16px;
@@ -90,9 +118,8 @@
       user-select: none;
       touch-action: none;
       z-index: 200;
-      transition: box-shadow .15s ease, border-color .15s ease;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
     }
-
     #dragCard img {
       width: 100px;
       height: 100px;
@@ -105,13 +132,12 @@
       border-color: #2ecc71 !important;
       box-shadow: 0 0 18px rgba(46, 204, 113, 0.9) !important;
     }
-
     .wrong {
       border-color: #e74c3c !important;
       box-shadow: 0 0 18px rgba(231, 76, 60, 0.9) !important;
     }
 
-    /* sembol tahtası */
+    /* Sembol tahtası */
     #symbolBoard {
       position: absolute;
       bottom: 20px;
@@ -125,52 +151,61 @@
       justify-content: center;
       align-items: center;
       padding: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     }
-
     .slot {
       width: 28px;
       height: 28px;
       border-radius: 8px;
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
       margin: 4px;
       font-size: 22px;
       text-align: center;
       line-height: 28px;
-      opacity: .25;
+      opacity: 0.25;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
     .slot.active {
       opacity: 1;
     }
 
-    /* ortada beliren yıldız */
+    /* Ortada beliren yıldız */
     #flyStar {
       position: absolute;
       width: 60px;
       height: 60px;
       background: gold;
       border-radius: 50%;
-      box-shadow: 0 0 12px rgba(255,215,0,.9);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.9);
       top: 50%;
       left: 50%;
-      transform: translate(-50%,-50%) scale(0);
+      transform: translate(-50%, -50%) scale(0);
       opacity: 0;
       pointer-events: none;
       z-index: 999;
-      transition: all .25s ease;
+      transition: all 0.25s ease;
     }
 
-    @media (max-width: 500px) {
-      #optionLeft { left: 5%; }
-      #optionRight { right: 5%; }
+    /* küçük ekran */
+    @media (max-width: 540px) {
+      #optionLeft { left: 6%; }
+      #optionRight { right: 6%; }
       #symbolBoard { transform: scale(.85); right: 4px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Splash -->
+  <div id="splash">
+    <h1>Powered by Pika & Berk</h1>
+    <p>Özel Eğitim Eşleme Modülü</p>
+  </div>
+
   <div id="instruction">YÖNERGE: EŞLE</div>
 
-  <!-- üstte sabit -->
+  <!-- Üstte sabit kartlar -->
   <div class="option-card" id="optionLeft">
     <img id="leftImg" src="" alt="">
     <div class="label" id="leftLabel"></div>
@@ -180,89 +215,100 @@
     <div class="label" id="rightLabel"></div>
   </div>
 
-  <!-- altta sürüklenen -->
+  <!-- Alttaki sürüklenen kart -->
   <div class="card" id="dragCard">
     <img id="dragImg" src="" alt="">
     <div class="label" id="dragLabel"></div>
   </div>
 
-  <!-- sembol tahtası -->
+  <!-- Sembol tahtası -->
   <div id="symbolBoard"></div>
+
+  <!-- Uçan yıldız -->
   <div id="flyStar"></div>
 
-  <!-- sesler -->
+  <!-- Sesler -->
   <audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf4d03054b.mp3"></audio>
   <audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3"></audio>
   <audio id="praise" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3"></audio>
 
   <script>
-    // ----- VERİ HAVUZU -----
+    // ---------- VERİ HAVUZU ----------
     const pool = [
-      {id:"elma", tr:"Elma"},
-      {id:"muz", tr:"Muz"},
-      {id:"armut", tr:"Armut"},
-      {id:"patlican", tr:"Patlıcan"},
-      {id:"domates", tr:"Domates"},
-      {id:"sarimsak", tr:"Sarımsak"},
-      {id:"araba", tr:"Araba"},
-      {id:"otobus", tr:"Otobüs"},
-      {id:"ucak", tr:"Uçak"},
-      {id:"kopek", tr:"Köpek"}
+      { id: "elma", tr: "Elma" },
+      { id: "muz", tr: "Muz" },
+      { id: "armut", tr: "Armut" },
+      { id: "patlican", tr: "Patlıcan" },
+      { id: "domates", tr: "Domates" },
+      { id: "sarimsak", tr: "Sarımsak" },
+      { id: "araba", tr: "Araba" },
+      { id: "otobus", tr: "Otobüs" },
+      { id: "ucak", tr: "Uçak" },
+      { id: "kopek", tr: "Köpek" },
     ];
 
-    // ----- ELEMENTLER -----
-    const instruction = document.getElementById('instruction');
-    const leftImg = document.getElementById('leftImg');
-    const rightImg = document.getElementById('rightImg');
-    const leftLabel = document.getElementById('leftLabel');
-    const rightLabel = document.getElementById('rightLabel');
+    // ---------- ELEMENTLER ----------
+    const instruction = document.getElementById("instruction");
+    const optionLeft = document.getElementById("optionLeft");
+    const optionRight = document.getElementById("optionRight");
+    const leftImg = document.getElementById("leftImg");
+    const rightImg = document.getElementById("rightImg");
+    const leftLabel = document.getElementById("leftLabel");
+    const rightLabel = document.getElementById("rightLabel");
+    const dragCard = document.getElementById("dragCard");
+    const dragImg = document.getElementById("dragImg");
+    const dragLabel = document.getElementById("dragLabel");
+    const symbolBoard = document.getElementById("symbolBoard");
+    const flyStar = document.getElementById("flyStar");
+    const correctSound = document.getElementById("correctSound");
+    const wrongSound = document.getElementById("wrongSound");
+    const praiseSound = document.getElementById("praise");
 
-    const dragCard = document.getElementById('dragCard');
-    const dragImg = document.getElementById('dragImg');
-    const dragLabel = document.getElementById('dragLabel');
-
-    const optionLeft = document.getElementById('optionLeft');
-    const optionRight = document.getElementById('optionRight');
-
-    const symbolBoard = document.getElementById('symbolBoard');
-    const flyStar = document.getElementById('flyStar');
-
-    const correctSound = document.getElementById('correctSound');
-    const wrongSound = document.getElementById('wrongSound');
-    const praiseSound = document.getElementById('praise');
-
-    // sembol tahtasını 10'lu üret
-    let slots = [];
-    for (let i=0; i<10; i++) {
-      const s = document.createElement('div');
-      s.className = 'slot';
+    // ---------- SEMBOL TAHTASI OLUŞTUR ----------
+    const slots = [];
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement("div");
+      s.className = "slot";
       symbolBoard.appendChild(s);
       slots.push(s);
     }
 
-    // ----- DURUMLAR -----
+    // ---------- DURUMLAR ----------
     let currentItem = null;
     let wrongItem = null;
-    let attempt = 1;           // 1. doğru mu 2. doğru mu
+    let attempt = 1; // 1. doğru mu 2. doğru mu
     let symbolCount = 0;
+    let countingMode = false; // 10 olunca aktif
+    let counted = 0; // tıklayarak kaç sembol saydık
 
-    // drag için
+    // drag durumları
     let isDragging = false;
-    let startX = 0, startY = 0;
-    let startLeft = 0, startTop = 0;
+    let startX = 0,
+      startY = 0,
+      startLeft = 0,
+      startTop = 0;
 
-    // ----- YARDIMCI -----
+    // ---------- YARDIMCI FONKSİYONLAR ----------
     function randomItem() {
       return pool[Math.floor(Math.random() * pool.length)];
     }
 
     function speakTR(text) {
-      if (!('speechSynthesis' in window)) return;
+      if (!("speechSynthesis" in window)) return;
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "tr-TR";
       window.speechSynthesis.speak(u);
     }
 
+    function resetDragPosition() {
+      dragCard.style.transition = "all .25s ease";
+      dragCard.style.bottom = "14%";
+      dragCard.style.left = "50%";
+      dragCard.style.top = "";
+      dragCard.style.transform = "translateX(-50%)";
+    }
+
+    // ---------- YENİ NESNE YÜKLE ----------
     function loadNew() {
       currentItem = randomItem();
       do {
@@ -275,66 +321,62 @@
     function renderQuestion(shuffle) {
       instruction.textContent = `${currentItem.tr.toUpperCase()} EŞLE`;
 
-      const correctData = { id: currentItem.id, tr: currentItem.tr, img: `assets/${currentItem.id}.png` };
-      const wrongData   = { id: wrongItem.id,   tr: wrongItem.tr,   img: `assets/${wrongItem.id}.png`   };
+      const correctData = {
+        id: currentItem.id,
+        tr: currentItem.tr,
+        img: `assets/${currentItem.id}.png`,
+      };
+      const wrongData = {
+        id: wrongItem.id,
+        tr: wrongItem.tr,
+        img: `assets/${wrongItem.id}.png`,
+      };
 
       let arr = [correctData, wrongData];
       if (shuffle) arr.sort(() => Math.random() - 0.5);
 
-      // üstteki iki kartı doldur
+      // üst kartlara yerleştir
       leftImg.src = arr[0].img;
-      leftImg.dataset.id = arr[0].id;
       leftLabel.textContent = arr[0].tr.toUpperCase();
+      leftImg.dataset.id = arr[0].id;
 
       rightImg.src = arr[1].img;
-      rightImg.dataset.id = arr[1].id;
       rightLabel.textContent = arr[1].tr.toUpperCase();
+      rightImg.dataset.id = arr[1].id;
 
-      // alttaki kart: hedef
+      // alttaki sürüklenen hedef
       dragImg.src = `assets/${currentItem.id}.png`;
       dragLabel.textContent = currentItem.tr.toUpperCase();
 
       resetDragPosition();
     }
 
-    function resetDragPosition() {
-      // alttaki kartı tekrar ortaya al
-      dragCard.style.transition = "all .25s ease";
-      dragCard.style.bottom = "14%";
-      dragCard.style.left = "50%";
-      dragCard.style.top = "";
-      dragCard.style.transform = "translateX(-50%)";
-    }
-
-    // ----- DRAG LOGIC -----
+    // ---------- SÜRÜKLEME ----------
     function dragStart(e) {
       e.preventDefault();
       isDragging = true;
-      const point = e.touches ? e.touches[0] : e;
-      startX = point.clientX;
-      startY = point.clientY;
-
+      const p = e.touches ? e.touches[0] : e;
+      startX = p.clientX;
+      startY = p.clientY;
       const rect = dragCard.getBoundingClientRect();
       startLeft = rect.left;
       startTop = rect.top;
-
       dragCard.style.transition = "none";
       dragCard.style.cursor = "grabbing";
 
-      document.addEventListener('mousemove', dragging);
-      document.addEventListener('touchmove', dragging, {passive:false});
-      document.addEventListener('mouseup', dragEnd);
-      document.addEventListener('touchend', dragEnd);
+      document.addEventListener("mousemove", dragging);
+      document.addEventListener("touchmove", dragging, { passive: false });
+      document.addEventListener("mouseup", dragEnd);
+      document.addEventListener("touchend", dragEnd);
     }
 
     function dragging(e) {
       if (!isDragging) return;
-      const point = e.touches ? e.touches[0] : e;
-      const dx = point.clientX - startX;
-      const dy = point.clientY - startY;
-
-      dragCard.style.left = (startLeft + dx) + "px";
-      dragCard.style.top  = (startTop + dy) + "px";
+      const p = e.touches ? e.touches[0] : e;
+      const dx = p.clientX - startX;
+      const dy = p.clientY - startY;
+      dragCard.style.left = startLeft + dx + "px";
+      dragCard.style.top = startTop + dy + "px";
       dragCard.style.transform = "none";
     }
 
@@ -342,23 +384,21 @@
       if (!isDragging) return;
       isDragging = false;
       dragCard.style.cursor = "grab";
+      document.removeEventListener("mousemove", dragging);
+      document.removeEventListener("touchmove", dragging);
+      document.removeEventListener("mouseup", dragEnd);
+      document.removeEventListener("touchend", dragEnd);
 
-      document.removeEventListener('mousemove', dragging);
-      document.removeEventListener('touchmove', dragging);
-      document.removeEventListener('mouseup', dragEnd);
-      document.removeEventListener('touchend', dragEnd);
+      const dRect = dragCard.getBoundingClientRect();
+      const lRect = optionLeft.getBoundingClientRect();
+      const rRect = optionRight.getBoundingClientRect();
 
-      // çarpışma kontrolü
-      const dragRect = dragCard.getBoundingClientRect();
-      const leftRect = optionLeft.getBoundingClientRect();
-      const rightRect = optionRight.getBoundingClientRect();
-
-      const hitLeft = isOverlap(dragRect, leftRect);
-      const hitRight = isOverlap(dragRect, rightRect);
+      const hitLeft = isOverlap(dRect, lRect);
+      const hitRight = isOverlap(dRect, rRect);
 
       if (hitLeft || hitRight) {
-        const targetId = hitLeft ? leftImg.dataset.id : rightImg.dataset.id;
-        if (targetId === currentItem.id) {
+        const chosenId = hitLeft ? leftImg.dataset.id : rightImg.dataset.id;
+        if (chosenId === currentItem.id) {
           handleCorrect();
         } else {
           handleWrong();
@@ -377,14 +417,13 @@
       );
     }
 
-    // ----- DOĞRU / YANLIŞ -----
+    // ---------- DOĞRU / YANLIŞ ----------
     function handleCorrect() {
       dragCard.classList.add("correct");
       correctSound.currentTime = 0;
-      correctSound.play().catch(()=>{});
-
+      correctSound.play().catch(() => {});
       if (attempt === 1) {
-        // aynı nesneyi 2. kez soracağız ama üsttekilerin yerini değiştir
+        // ilk doğru -> üst kartlar yer değiştirsin
         setTimeout(() => {
           dragCard.classList.remove("correct");
           swapTopCards();
@@ -392,7 +431,7 @@
           resetDragPosition();
         }, 500);
       } else {
-        // 2. kez de doğru yaptı -> sembol + yeni nesne
+        // ikinci doğru -> sembol ve yeni nesne
         gainSymbol();
         setTimeout(() => {
           dragCard.classList.remove("correct");
@@ -404,16 +443,15 @@
     function handleWrong() {
       dragCard.classList.add("wrong");
       wrongSound.currentTime = 0;
-      wrongSound.play().catch(()=>{});
+      wrongSound.play().catch(() => {});
       setTimeout(() => {
         dragCard.classList.remove("wrong");
         resetDragPosition();
       }, 500);
     }
 
-    // ----- ÜST KARTLARI YER DEĞİŞTİR -----
     function swapTopCards() {
-      // görsel yer değişimi
+      // sadece içeriklerini değiştiriyoruz (konumlar aynı)
       const tmpSrc = leftImg.src;
       const tmpLabel = leftLabel.textContent;
       const tmpId = leftImg.dataset.id;
@@ -425,50 +463,81 @@
       rightImg.src = tmpSrc;
       rightLabel.textContent = tmpLabel;
       rightImg.dataset.id = tmpId;
-
-      // pozisyonları animasyonlu olsun diye sadece left/right değiştirmedik
-      // çünkü ilk başta zaten 20% – 20% hizalılar
     }
 
-    // ----- SEMBOL -----
+    // ---------- SEMBOL SİSTEMİ (V18) ----------
+    // 10 olunca sayma moduna geçeceğiz
     function gainSymbol() {
-      // --- V18: Sembolleri Sayma Sistemi ---
-let countingMode = false;
-let counted = 0;
+      if (symbolCount >= 10) return;
+      slots[symbolCount].textContent = "⭐";
+      slots[symbolCount].classList.add("active");
+      symbolCount++;
 
-// sembollere tıklayınca sayma
-slots.forEach((s, idx) => {
-  s.addEventListener("click", () => {
-    if (!countingMode || !s.classList.contains("active")) return;
-    s.classList.remove("active");
-    s.textContent = "";
-    counted++;
-    const sayilar = ["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
-    speakTR(sayilar[counted-1]);
-    s.style.transition = "all .5s ease";
-    s.style.transform = "translateY(-40px)";
-    s.style.opacity = 0;
-    setTimeout(() => { s.style.transform = ""; s.style.opacity = 1; }, 600);
+      const sayilar = ["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
+      speakTR(sayilar[symbolCount - 1]);
 
-    if (counted === 10) {
+      // uçan yıldız
+      flyStar.style.opacity = 1;
+      flyStar.style.transform = "translate(-50%, -50%) scale(1)";
       setTimeout(() => {
-        const aferinSes = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3");
-        speakTR("Aferin, tüm sembolleri topladın!");
-        aferinSes.play();
-        slots.forEach(x => {x.textContent="";x.classList.remove("active");});
-        symbolCount = 0;
-        countingMode = false;
+        flyStar.style.opacity = 0;
+        flyStar.style.transform = "translate(-50%, -50%) scale(0)";
+      }, 300);
+
+      // 10 oldu -> sayma moduna geç
+      if (symbolCount === 10) {
+        speakTR("Hadi sembolleri sayalım.");
+        countingMode = true;
         counted = 0;
-      }, 800);
+      }
     }
-  });
-});
 
-    // ----- OLAYLAR -----
-    dragCard.addEventListener('mousedown', dragStart);
-    dragCard.addEventListener('touchstart', dragStart, {passive:false});
+    // sembollere tıklayıp sayma
+    slots.forEach((slot, idx) => {
+      slot.addEventListener("click", () => {
+        if (!countingMode) return;
+        if (!slot.classList.contains("active")) return;
 
-    window.addEventListener('load', () => {
+        // sembolü "kopar"
+        slot.classList.remove("active");
+        slot.textContent = "";
+        counted++;
+
+        const sayilar = ["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
+        speakTR(sayilar[counted - 1]);
+
+        // animasyonla tahtadan ayrılma
+        slot.style.transform = "translateY(-35px)";
+        slot.style.opacity = 0;
+        setTimeout(() => {
+          slot.style.transform = "";
+          slot.style.opacity = 1;
+        }, 500);
+
+        // 10 tane sayıldıysa aferin + sıfırla
+        if (counted === 10) {
+          setTimeout(() => {
+            speakTR("Aferin, tüm sembolleri topladın.");
+            praiseSound.currentTime = 0;
+            praiseSound.play().catch(() => {});
+            // tahtayı temizle
+            slots.forEach((s) => {
+              s.textContent = "";
+              s.classList.remove("active");
+            });
+            symbolCount = 0;
+            countingMode = false;
+            counted = 0;
+          }, 700);
+        }
+      });
+    });
+
+    // ---------- OLAY BAĞLAMA ----------
+    dragCard.addEventListener("mousedown", dragStart);
+    dragCard.addEventListener("touchstart", dragStart, { passive: false });
+
+    window.addEventListener("load", () => {
       loadNew();
     });
   </script>
