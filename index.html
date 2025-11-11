@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2 Seçenekli Eşleme – V13</title>
+  <style>
+    :root {
+      --card-w: 180px;
+      --card-h: 220px;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom right, #b3e5fc, #e1f5fe);
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Comic Sans MS", system-ui, sans-serif;
+      position: relative;
+    }
+    /* YÖNERGE */
+    #instruction {
+      position: absolute;
+      top: 10px;
+      left: 14px;
+      background: rgba(255,255,255,0.9);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      z-index: 1000;
+    }
+    /* Seçenekler */
+    #options {
+      position: absolute;
+      top: 14vh;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 24px;
+    }
+    .option-card {
+      width: 150px;
+      height: 160px;
+      background: #fff;
+      border: 3px solid rgba(11,132,165,0.4);
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      cursor: pointer;
+      transition: transform .1s ease;
+    }
+    .option-card img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-top: 12px;
+      pointer-events: none;
+    }
+    .option-label {
+      margin-top: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 14px;
+      text-align: center;
+    }
+    .correct {
+      box-shadow: 0 0 18px rgba(46,204,113,0.9);
+      border-color: rgba(46,204,113,1);
+    }
+    .wrong {
+      box-shadow: 0 0 18px rgba(231,76,60,0.9);
+      border-color: rgba(231,76,60,1);
+    }
+    /* Ortadaki hedef kart */
+    #targetCard {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -35%);
+      width: var(--card-w);
+      height: var(--card-h);
+      background: #fff;
+      border-radius: 18px;
+      border: 3px solid rgba(11,132,165,0.4);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    #targetCard img {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      margin-top: 16px;
+    }
+    #targetTr {
+      font-weight: 700;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+    #targetEn {
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    /* Sembol tahtası 10'lu */
+    #symbolBoard {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 320px;
+      height: 150px;
+      background: url('https://cdn.pixabay.com/photo/2014/04/02/10/56/wood-306955_1280.png') no-repeat center/cover;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .row {
+      display: flex;
+      gap: 6px;
+    }
+    .slot {
+      width: 26px;
+      height: 26px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      opacity: .25;
+    }
+    .slot.active {
+      opacity: 1;
+    }
+    /* ortada beliren yıldız (sembol kazanınca) */
+    #flyStar {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: gold;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255,215,0,0.9);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 2000;
+    }
+    @media (max-width: 500px) {
+      #options {
+        top: 10vh;
+        gap: 12px;
+      }
+      .option-card {
+        width: 130px;
+        height: 150px;
+      }
+      #symbolBoard {
+        transform: scale(.8);
+        right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="instruction">YÖNERGE: EŞLE</div>
+
+  <!-- 2 seçenek -->
+  <div id="options">
+    <div class="option-card" id="opt1">
+      <img id="opt1Img" src="" alt="">
+      <div class="option-label" id="opt1Label"></div>
+    </div>
+    <div class="option-card" id="opt2">
+      <img id="opt2Img" src="" alt="">
+      <div class="option-label" id="opt2Label"></div>
+    </div>
+  </div>
+
+  <!-- Ortadaki hedef -->
+  <div id="targetCard">
+    <img id="targetImg" src="" alt="">
+    <div id="targetTr">ELMA</div>
+    <div id="targetEn">Apple</div>
+  </div>
+
+  <!-- 10'lu sembol tahtası -->
+  <div id="symbolBoard">
+    <div class="row">
+      <div class="slot" id="s1"></div>
+      <div class="slot" id="s2"></div>
+      <div class="slot" id="s3"></div>
+      <div class="slot" id="s4"></div>
+      <div class="slot" id="s5"></div>
+    </div>
+    <div class="row">
+      <div class="slot" id="s6"></div>
+      <div class="slot" id="s7"></div>
+      <div class="slot" id="s8"></div>
+      <div class="slot" id="s9"></div>
+      <div class="slot" id="s10"></div>
+    </div>
+  </div>
+
+  <!-- uçan yıldız -->
+  <div id="flyStar"></div>
+
+  <!-- Sesler -->
+  <audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf4d03054b.mp3?filename=correct-2-46134.mp3"></audio>
+  <audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3?filename=error-126627.mp3"></audio>
+  <audio id="praise" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3?filename=kids-cheer-43898.mp3"></audio>
+
+  <script>
+    // veri havuzu (senin assets klasöründeki isimlerle eşleştir)
+    const pool = [
+      {id:"elma", tr:"Elma", en:"Apple"},
+      {id:"muz", tr:"Muz", en:"Banana"},
+      {id:"armut", tr:"Armut", en:"Pear"},
+      {id:"patlican", tr:"Patlıcan", en:"Eggplant"},
+      {id:"domates", tr:"Domates", en:"Tomato"},
+      {id:"sarimsak", tr:"Sarımsak", en:"Garlic"},
+      {id:"araba", tr:"Araba", en:"Car"},
+      {id:"otobus", tr:"Otobüs", en:"Bus"},
+      {id:"ucak", tr:"Uçak", en:"Airplane"},
+      {id:"kopek", tr:"Köpek", en:"Dog"},
+      {id:"kedi", tr:"Kedi", en:"Cat"},
+      {id:"inek", tr:"İnek", en:"Cow"}
+    ];
+
+    const instruction = document.getElementById('instruction');
+    const targetImg  = document.getElementById('targetImg');
+    const targetTr   = document.getElementById('targetTr');
+    const targetEn   = document.getElementById('targetEn');
+
+    const opt1 = document.getElementById('opt1');
+    const opt2 = document.getElementById('opt2');
+    const opt1Img = document.getElementById('opt1Img');
+    const opt2Img = document.getElementById('opt2Img');
+    const opt1Label = document.getElementById('opt1Label');
+    const opt2Label = document.getElementById('opt2Label');
+
+    const slots = [];
+    for (let i=1;i<=10;i++) slots.push(document.getElementById('s'+i));
+
+    const flyStar = document.getElementById('flyStar');
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound   = document.getElementById('wrongSound');
+    const praiseSound  = document.getElementById('praise');
+
+    let currentItem = null;
+    let otherItem   = null;
+    let attempt = 1;           // 1. eşleme mi 2. eşleme mi
+    let symbolCount = 0;       // 0-10
+    let audioReady = false;
+
+    // ses izni
+    document.body.addEventListener('click', ()=>{
+      if (!audioReady) {
+        [correctSound, wrongSound, praiseSound].forEach(a=>{
+          a.play().catch(()=>{});
+          a.pause(); a.currentTime=0;
+        });
+        audioReady = true;
+      }
+    }, {once:true});
+
+    function speakTR(text) {
+      if (!('speechSynthesis' in window)) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "tr-TR";
+      window.speechSynthesis.speak(u);
+    }
+
+    function pickRandom() {
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
+
+    function loadNewItem() {
+      currentItem = pickRandom();
+      // yanlış seçenek: farklı bir item olsun
+      do {
+        otherItem = pickRandom();
+      } while (otherItem.id === currentItem.id);
+
+      attempt = 1;
+      renderQuestion(true); // true: yeni nesne geldi
+    }
+
+    function renderQuestion(shufflePos=false) {
+      // hedefi ortaya yaz
+      const src = `assets/${currentItem.id}.png`;
+      targetImg.src = src;
+      targetTr.textContent = currentItem.tr.toUpperCase();
+      targetEn.textContent = currentItem.en;
+
+      instruction.textContent = `${currentItem.tr.toUpperCase()} EŞLE`;
+
+      // seçenekleri hazırla
+      const correctData = {src, tr: currentItem.tr, en: currentItem.en, id: currentItem.id};
+      const wrongData   = {src:`assets/${otherItem.id}.png`, tr: otherItem.tr, en: otherItem.en, id: otherItem.id};
+
+      let arr = [correctData, wrongData];
+
+      // eğer shufflePos true ise rastgele sırala
+      if (shufflePos) {
+        arr.sort(()=>Math.random()-0.5);
+      }
+
+      // seçenekleri yaz
+      opt1Img.src = arr[0].src;
+      opt1Label.textContent = arr[0].tr.toUpperCase();
+      opt1.dataset.id = arr[0].id;
+
+      opt2Img.src = arr[1].src;
+      opt2Label.textContent = arr[1].tr.toUpperCase();
+      opt2.dataset.id = arr[1].id;
+
+      // önceki renkleri sil
+      opt1.classList.remove('correct','wrong');
+      opt2.classList.remove('correct','wrong');
+    }
+
+    function handleOptionClick(e) {
+      const chosenId = e.currentTarget.dataset.id;
+      const card = e.currentTarget;
+
+      if (chosenId === currentItem.id) {
+        // doğru
+        card.classList.add('correct');
+        correctSound.currentTime = 0;
+        correctSound.play().catch(()=>{});
+        if (attempt === 1) {
+          // aynı nesneyi 2. kez soracağız
+          setTimeout(()=>{
+            renderQuestion(true); // yer değiştir
+            attempt = 2;
+          }, 500);
+        } else {
+          // 2. kez de doğru -> sembol kazan, yeni nesne
+          gainSymbol();
+          setTimeout(()=>{
+            loadNewItem();
+          }, 500);
+        }
+      } else {
+        // yanlış
+        card.classList.add('wrong');
+        wrongSound.currentTime = 0;
+        wrongSound.play().catch(()=>{});
+        setTimeout(()=>{
+          card.classList.remove('wrong');
+          // aynı nesneyi tekrar göster, yer değiştirme
+          renderQuestion(false);
+        }, 500);
+      }
+    }
+
+    opt1.addEventListener('click', handleOptionClick);
+    opt2.addEventListener('click', handleOptionClick);
+
+    function gainSymbol() {
+      if (symbolCount >= 10) return;
+      symbolCount++;
+      // yıldızı göster
+      slots[symbolCount-1].textContent = "⭐";
+      slots[symbolCount-1].classList.add('active');
+
+      // sayı olarak da söyle
+      const sayilar = ["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
+      speakTR(sayilar[symbolCount-1]);
+
+      // uçan yıldız animasyonu
+      flyStar.style.opacity = 1;
+      flyStar.style.transform = "translate(-50%, -50%) scale(1)";
+      setTimeout(()=>{
+        flyStar.style.opacity = 0;
+        flyStar.style.transform = "translate(-50%, -50%) scale(0)";
+      }, 350);
+
+      if (symbolCount === 10) {
+        // aferin
+        speakTR("Aferin, tüm sembolleri topladın.");
+        praiseSound.currentTime = 0;
+        praiseSound.play().catch(()=>{});
+        setTimeout(()=>{
+          // tahtayı temizle
+          slots.forEach(s=>{
+            s.textContent = "";
+            s.classList.remove('active');
+          });
+          symbolCount = 0;
+        }, 2000);
+      }
+    }
+
+    // başlangıç
+    window.addEventListener('load', ()=>{
+      loadNewItem();
+    });
+    window.addEventListener('resize', ()=>{
+      // ortalamayı bozmamak için sadece bırakıyoruz
+    });
+  </script>
+</body>
+</html>
