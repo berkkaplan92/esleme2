@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2 Seçenekli Eşleme – V13</title>
+  <title>2 Seçenekli Sürükle-Bırak Eşleme – V14</title>
   <style>
     :root {
       --card-w: 180px;
@@ -17,7 +17,7 @@
       font-family: "Comic Sans MS", system-ui, sans-serif;
       position: relative;
     }
-    /* YÖNERGE */
+    /* Yönerge */
     #instruction {
       position: absolute;
       top: 10px;
@@ -30,14 +30,15 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.12);
       z-index: 1000;
     }
-    /* Seçenekler */
-    #options {
+    /* Üstteki 2 seçenek alanı */
+    #options-wrapper {
       position: absolute;
-      top: 14vh;
+      top: 10vh;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
-      gap: 24px;
+      width: 420px;
+      height: 180px;
+      pointer-events: none;
     }
     .option-card {
       width: 150px;
@@ -50,8 +51,20 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      cursor: pointer;
-      transition: transform .1s ease;
+      position: absolute;
+      pointer-events: auto;
+      touch-action: none;
+      transition: box-shadow .2s ease, border-color .2s ease;
+    }
+    /* soldaki default poz */
+    #opt1 {
+      top: 0;
+      left: 30px;
+    }
+    /* sağdaki default poz */
+    #opt2 {
+      top: 0;
+      right: 30px;
     }
     .option-card img {
       width: 90px;
@@ -75,12 +88,13 @@
       box-shadow: 0 0 18px rgba(231,76,60,0.9);
       border-color: rgba(231,76,60,1);
     }
-    /* Ortadaki hedef kart */
+
+    /* Merkezdeki hedef kart */
     #targetCard {
       position: absolute;
-      top: 50%;
+      top: 52vh;
       left: 50%;
-      transform: translate(-50%, -35%);
+      transform: translate(-50%, -50%);
       width: var(--card-w);
       height: var(--card-h);
       background: #fff;
@@ -107,7 +121,8 @@
       font-size: 12px;
       margin-bottom: 8px;
     }
-    /* Sembol tahtası 10'lu */
+
+    /* 10'lu sembol tahtası */
     #symbolBoard {
       position: absolute;
       bottom: 24px;
@@ -141,7 +156,8 @@
     .slot.active {
       opacity: 1;
     }
-    /* ortada beliren yıldız (sembol kazanınca) */
+
+    /* ortada beliren yıldız */
     #flyStar {
       position: absolute;
       width: 60px;
@@ -156,27 +172,13 @@
       opacity: 0;
       z-index: 2000;
     }
-    @media (max-width: 500px) {
-      #options {
-        top: 10vh;
-        gap: 12px;
-      }
-      .option-card {
-        width: 130px;
-        height: 150px;
-      }
-      #symbolBoard {
-        transform: scale(.8);
-        right: 0;
-      }
-    }
   </style>
 </head>
 <body>
   <div id="instruction">YÖNERGE: EŞLE</div>
 
-  <!-- 2 seçenek -->
-  <div id="options">
+  <!-- 2 seçenek üstte -->
+  <div id="options-wrapper">
     <div class="option-card" id="opt1">
       <img id="opt1Img" src="" alt="">
       <div class="option-label" id="opt1Label"></div>
@@ -187,7 +189,7 @@
     </div>
   </div>
 
-  <!-- Ortadaki hedef -->
+  <!-- ortadaki hedef -->
   <div id="targetCard">
     <img id="targetImg" src="" alt="">
     <div id="targetTr">ELMA</div>
@@ -215,13 +217,13 @@
   <!-- uçan yıldız -->
   <div id="flyStar"></div>
 
-  <!-- Sesler -->
+  <!-- sesler -->
   <audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf4d03054b.mp3?filename=correct-2-46134.mp3"></audio>
   <audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3?filename=error-126627.mp3"></audio>
   <audio id="praise" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3?filename=kids-cheer-43898.mp3"></audio>
 
   <script>
-    // veri havuzu (senin assets klasöründeki isimlerle eşleştir)
+    // veri havuzu
     const pool = [
       {id:"elma", tr:"Elma", en:"Apple"},
       {id:"muz", tr:"Muz", en:"Banana"},
@@ -232,15 +234,13 @@
       {id:"araba", tr:"Araba", en:"Car"},
       {id:"otobus", tr:"Otobüs", en:"Bus"},
       {id:"ucak", tr:"Uçak", en:"Airplane"},
-      {id:"kopek", tr:"Köpek", en:"Dog"},
-      {id:"kedi", tr:"Kedi", en:"Cat"},
-      {id:"inek", tr:"İnek", en:"Cow"}
+      {id:"kopek", tr:"Köpek", en:"Dog"}
     ];
 
     const instruction = document.getElementById('instruction');
-    const targetImg  = document.getElementById('targetImg');
-    const targetTr   = document.getElementById('targetTr');
-    const targetEn   = document.getElementById('targetEn');
+    const targetImg = document.getElementById('targetImg');
+    const targetTr  = document.getElementById('targetTr');
+    const targetEn  = document.getElementById('targetEn');
 
     const opt1 = document.getElementById('opt1');
     const opt2 = document.getElementById('opt2');
@@ -249,106 +249,175 @@
     const opt1Label = document.getElementById('opt1Label');
     const opt2Label = document.getElementById('opt2Label');
 
+    const targetCard = document.getElementById('targetCard');
+    const flyStar = document.getElementById('flyStar');
+
     const slots = [];
     for (let i=1;i<=10;i++) slots.push(document.getElementById('s'+i));
 
-    const flyStar = document.getElementById('flyStar');
     const correctSound = document.getElementById('correctSound');
     const wrongSound   = document.getElementById('wrongSound');
     const praiseSound  = document.getElementById('praise');
 
     let currentItem = null;
     let otherItem   = null;
-    let attempt = 1;           // 1. eşleme mi 2. eşleme mi
-    let symbolCount = 0;       // 0-10
+    let attempt = 1;            // 1 veya 2
+    let symbolCount = 0;
     let audioReady = false;
+
+    // drag değişkenleri
+    let dragging = null;
+    let startX=0, startY=0, origX=0, origY=0;
 
     // ses izni
     document.body.addEventListener('click', ()=>{
       if (!audioReady) {
         [correctSound, wrongSound, praiseSound].forEach(a=>{
           a.play().catch(()=>{});
-          a.pause(); a.currentTime=0;
+          a.pause(); a.currentTime = 0;
         });
         audioReady = true;
       }
     }, {once:true});
 
-    function speakTR(text) {
+    function speakTR(text){
       if (!('speechSynthesis' in window)) return;
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "tr-TR";
       window.speechSynthesis.speak(u);
     }
 
-    function pickRandom() {
+    function pickRandom(){
       return pool[Math.floor(Math.random()*pool.length)];
     }
 
-    function loadNewItem() {
+    function loadNewItem(){
       currentItem = pickRandom();
-      // yanlış seçenek: farklı bir item olsun
       do {
         otherItem = pickRandom();
       } while (otherItem.id === currentItem.id);
-
       attempt = 1;
-      renderQuestion(true); // true: yeni nesne geldi
+      renderQuestion(true);
     }
 
-    function renderQuestion(shufflePos=false) {
-      // hedefi ortaya yaz
-      const src = `assets/${currentItem.id}.png`;
-      targetImg.src = src;
+    function renderQuestion(shuffle){
+      // hedef
+      targetImg.src = `assets/${currentItem.id}.png`;
       targetTr.textContent = currentItem.tr.toUpperCase();
       targetEn.textContent = currentItem.en;
-
       instruction.textContent = `${currentItem.tr.toUpperCase()} EŞLE`;
 
-      // seçenekleri hazırla
-      const correctData = {src, tr: currentItem.tr, en: currentItem.en, id: currentItem.id};
-      const wrongData   = {src:`assets/${otherItem.id}.png`, tr: otherItem.tr, en: otherItem.en, id: otherItem.id};
+      // seçenekler
+      const correctData = {id: currentItem.id, tr: currentItem.tr, img: `assets/${currentItem.id}.png`};
+      const wrongData   = {id: otherItem.id, tr: otherItem.tr, img: `assets/${otherItem.id}.png`};
 
       let arr = [correctData, wrongData];
+      if (shuffle) arr.sort(()=>Math.random()-0.5);
 
-      // eğer shufflePos true ise rastgele sırala
-      if (shufflePos) {
-        arr.sort(()=>Math.random()-0.5);
-      }
+      // opt1 başlangıç pozisyonu
+      opt1.style.left = "30px";
+      opt1.style.right = "";
+      opt1.style.top = "0px";
 
-      // seçenekleri yaz
-      opt1Img.src = arr[0].src;
+      opt2.style.right = "30px";
+      opt2.style.left = "";
+      opt2.style.top = "0px";
+
+      // yaz
+      opt1Img.src = arr[0].img;
       opt1Label.textContent = arr[0].tr.toUpperCase();
       opt1.dataset.id = arr[0].id;
 
-      opt2Img.src = arr[1].src;
+      opt2Img.src = arr[1].img;
       opt2Label.textContent = arr[1].tr.toUpperCase();
       opt2.dataset.id = arr[1].id;
 
-      // önceki renkleri sil
       opt1.classList.remove('correct','wrong');
       opt2.classList.remove('correct','wrong');
     }
 
-    function handleOptionClick(e) {
-      const chosenId = e.currentTarget.dataset.id;
-      const card = e.currentTarget;
+    // drag start
+    function onDragStart(e){
+      dragging = e.currentTarget;
+      const rect = dragging.getBoundingClientRect();
+      startX = (e.touches ? e.touches[0].clientX : e.clientX);
+      startY = (e.touches ? e.touches[0].clientY : e.clientY);
+      // kartın current left/top değerlerini al
+      origX = rect.left;
+      origY = rect.top;
+      dragging.style.transition = "none";
 
+      document.addEventListener('mousemove', onDragging);
+      document.addEventListener('touchmove', onDragging, {passive:false});
+      document.addEventListener('mouseup', onDragEnd);
+      document.addEventListener('touchend', onDragEnd);
+    }
+
+    function onDragging(e){
+      if (!dragging) return;
+      const x = (e.touches ? e.touches[0].clientX : e.clientX);
+      const y = (e.touches ? e.touches[0].clientY : e.clientY);
+      const dx = x - startX;
+      const dy = y - startY;
+      dragging.style.left = (origX + dx) + "px";
+      dragging.style.top  = (origY + dy) + "px";
+      dragging.style.right = "auto";
+    }
+
+    function onDragEnd(){
+      if (!dragging) return;
+      // çakışma kontrol
+      const dRect = dragging.getBoundingClientRect();
+      const tRect = targetCard.getBoundingClientRect();
+      const cx = dRect.left + dRect.width/2;
+      const cy = dRect.top + dRect.height/2;
+      const hit = cx > tRect.left && cx < tRect.right && cy > tRect.top && cy < tRect.bottom;
+
+      document.removeEventListener('mousemove', onDragging);
+      document.removeEventListener('touchmove', onDragging);
+      document.removeEventListener('mouseup', onDragEnd);
+      document.removeEventListener('touchend', onDragEnd);
+
+      if (hit) {
+        handleDrop(dragging);
+      } else {
+        // eski yerine dön
+        snapBack(dragging);
+      }
+      dragging = null;
+    }
+
+    function snapBack(card){
+      card.style.transition = "all .25s ease";
+      if (card.id === "opt1") {
+        card.style.left = "30px";
+        card.style.top  = "0px";
+      } else {
+        card.style.right = "30px";
+        card.style.left  = "";
+        card.style.top   = "0px";
+      }
+    }
+
+    function handleDrop(card){
+      const chosenId = card.dataset.id;
       if (chosenId === currentItem.id) {
         // doğru
         card.classList.add('correct');
         correctSound.currentTime = 0;
         correctSound.play().catch(()=>{});
         if (attempt === 1) {
-          // aynı nesneyi 2. kez soracağız
+          // aynı nesneyi bir kez daha sor, ama yer değiştir
           setTimeout(()=>{
-            renderQuestion(true); // yer değiştir
+            card.classList.remove('correct');
+            renderQuestion(true);
             attempt = 2;
           }, 500);
         } else {
-          // 2. kez de doğru -> sembol kazan, yeni nesne
+          // 2. doğru -> sembol + yeni nesne
           gainSymbol();
           setTimeout(()=>{
+            card.classList.remove('correct');
             loadNewItem();
           }, 500);
         }
@@ -359,25 +428,20 @@
         wrongSound.play().catch(()=>{});
         setTimeout(()=>{
           card.classList.remove('wrong');
-          // aynı nesneyi tekrar göster, yer değiştirme
-          renderQuestion(false);
+          renderQuestion(false); // aynı yerleşimle sor
         }, 500);
       }
     }
 
-    opt1.addEventListener('click', handleOptionClick);
-    opt2.addEventListener('click', handleOptionClick);
-
-    function gainSymbol() {
+    function gainSymbol(){
       if (symbolCount >= 10) return;
       symbolCount++;
-      // yıldızı göster
       slots[symbolCount-1].textContent = "⭐";
       slots[symbolCount-1].classList.add('active');
 
-      // sayı olarak da söyle
+      // sayı seslendirmesi
       const sayilar = ["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
-      speakTR(sayilar[symbolCount-1]);
+      speakTR(sayilar[symbolCount-1] || "");
 
       // uçan yıldız animasyonu
       flyStar.style.opacity = 1;
@@ -393,7 +457,6 @@
         praiseSound.currentTime = 0;
         praiseSound.play().catch(()=>{});
         setTimeout(()=>{
-          // tahtayı temizle
           slots.forEach(s=>{
             s.textContent = "";
             s.classList.remove('active');
@@ -403,12 +466,14 @@
       }
     }
 
-    // başlangıç
+    // event bağlama
+    opt1.addEventListener('mousedown', onDragStart);
+    opt2.addEventListener('mousedown', onDragStart);
+    opt1.addEventListener('touchstart', onDragStart, {passive:false});
+    opt2.addEventListener('touchstart', onDragStart, {passive:false});
+
     window.addEventListener('load', ()=>{
       loadNewItem();
-    });
-    window.addEventListener('resize', ()=>{
-      // ortalamayı bozmamak için sadece bırakıyoruz
     });
   </script>
 </body>
