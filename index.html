@@ -432,34 +432,37 @@
 
     // ----- SEMBOL -----
     function gainSymbol() {
-      if (symbolCount >= 10) return;
-      slots[symbolCount].textContent = "⭐";
-      slots[symbolCount].classList.add("active");
-      const sayilar = ["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
-      speakTR(sayilar[symbolCount]);
-      symbolCount++;
+      // --- V18: Sembolleri Sayma Sistemi ---
+let countingMode = false;
+let counted = 0;
 
-      // ortada yıldız
-      flyStar.style.opacity = 1;
-      flyStar.style.transform = "translate(-50%,-50%) scale(1)";
+// sembollere tıklayınca sayma
+slots.forEach((s, idx) => {
+  s.addEventListener("click", () => {
+    if (!countingMode || !s.classList.contains("active")) return;
+    s.classList.remove("active");
+    s.textContent = "";
+    counted++;
+    const sayilar = ["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
+    speakTR(sayilar[counted-1]);
+    s.style.transition = "all .5s ease";
+    s.style.transform = "translateY(-40px)";
+    s.style.opacity = 0;
+    setTimeout(() => { s.style.transform = ""; s.style.opacity = 1; }, 600);
+
+    if (counted === 10) {
       setTimeout(() => {
-        flyStar.style.opacity = 0;
-        flyStar.style.transform = "translate(-50%,-50%) scale(0)";
-      }, 300);
-
-      if (symbolCount === 10) {
-        speakTR("Aferin, tüm sembolleri topladın.");
-        praiseSound.currentTime = 0;
-        praiseSound.play().catch(()=>{});
-        setTimeout(() => {
-          slots.forEach(s => {
-            s.textContent = "";
-            s.classList.remove("active");
-          });
-          symbolCount = 0;
-        }, 2000);
-      }
+        const aferinSes = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3");
+        speakTR("Aferin, tüm sembolleri topladın!");
+        aferinSes.play();
+        slots.forEach(x => {x.textContent="";x.classList.remove("active");});
+        symbolCount = 0;
+        countingMode = false;
+        counted = 0;
+      }, 800);
     }
+  });
+});
 
     // ----- OLAYLAR -----
     dragCard.addEventListener('mousedown', dragStart);
