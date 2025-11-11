@@ -1,275 +1,170 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Pika & Berk – V23 Görsel Tabelalı Eşleme</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eşleme Oyunu V24 – Mavi Tabela Edition</title>
 <style>
-:root{--card-w:160px;--card-h:200px;}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  background:linear-gradient(to bottom right,#b3e5fc,#e1f5fe);
-  height:100vh;
-  overflow:hidden;
-  font-family:"Comic Sans MS",system-ui,sans-serif;
-  position:relative;
-}
+  body {
+    background: linear-gradient(to bottom, #b3dcff, #e6f3ff);
+    font-family: "Comic Neue", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
 
-/* 🐻 Hayvan tabelalı yönerge */
-#instructionBox{
-  position:absolute;
-  top:20px;
-  left:20px;
-  width:260px;
-  z-index:20;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-#animalTop{
-  width:120px;
-  height:100px;
-  background:url("https://cdn.vectorstock.com/i/1000v/39/97/cute-teddy-bear-cartoon-with-blank-sign-vector-41083997.jpg") center/contain no-repeat;
-  pointer-events:none;
-  margin-bottom:-15px;
-}
-#instructionPanel{
-  background:#fff8e1;
-  border:3px solid #f6c453;
-  border-radius:16px;
-  box-shadow:0 4px 8px rgba(0,0,0,.15);
-  padding:10px 14px;
-  width:100%;
-}
-#instructionPanel .title{
-  font-weight:700;
-  margin-bottom:4px;
-  text-transform:uppercase;
-}
-#instructionPanel .line{
-  font-size:13px;
-  margin-bottom:2px;
-  text-transform:uppercase;
-}
+  /* 🧸 Ayıcık + tabela */
+  .yönerge-wrapper {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
 
-/* Kartlar */
-.option-card{
-  width:var(--card-w);
-  height:var(--card-h);
-  background:#fff;
-  border:3px solid rgba(11,132,165,.4);
-  border-radius:16px;
-  box-shadow:0 4px 10px rgba(0,0,0,.15);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  position:absolute;
-  transition:all .35s ease;
-  user-select:none;
-  z-index:10;
-}
-#optionLeft{top:14%;left:18%;}
-#optionRight{top:14%;right:18%;}
-.option-card img{
-  width:100px;height:100px;
-  object-fit:contain;
-  margin-top:10px;
-}
-.label{
-  font-weight:700;
-  text-transform:uppercase;
-  margin-top:8px;
-  text-align:center;
-}
+  .ayıcık {
+    width: 90px;
+    height: auto;
+  }
 
-/* Sürüklenen kart */
-#dragCard{
-  width:var(--card-w);
-  height:var(--card-h);
-  background:#fff;
-  border:3px solid rgba(11,132,165,.6);
-  border-radius:16px;
-  box-shadow:0 6px 10px rgba(0,0,0,.35);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  position:absolute;
-  bottom:18%;
-  left:50%;
-  transform:translateX(-50%);
-  cursor:grab;
-  touch-action:none;
-  z-index:200;
-  transition:box-shadow .15s ease,border-color .15s ease;
-}
-#dragCard img{width:100px;height:100px;object-fit:contain;margin-top:10px;}
-.correct{border-color:#2ecc71!important;box-shadow:0 0 18px rgba(46,204,113,.9)!important;}
-.wrong{border-color:#e74c3c!important;box-shadow:0 0 18px rgba(231,76,60,.9)!important;}
+  .yönerge {
+    background: #fff9e6;
+    border: 3px solid #ffcc66;
+    border-radius: 15px;
+    padding: 10px 20px;
+    color: #333;
+    font-size: 16px;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+  }
 
-/* 💫 Sembol bar */
-#poolBar{
-  position:fixed;
-  bottom:6%;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:6px;
-  background:rgba(255,255,255,.6);
-  padding:6px 10px;
-  border-radius:12px;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
-  z-index:150;
-}
-.pool-slot{
-  width:24px;height:24px;
-  background:rgba(255,255,255,.4);
-  border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-  opacity:.25;
-}
-.pool-slot.active{opacity:1;}
+  .yönerge h3 {
+    margin: 0 0 5px 0;
+    font-weight: bold;
+    color: #444;
+  }
 
-/* Sembol tahtası */
-#symbolBoard{
-  position:absolute;
-  bottom:20px;
-  right:20px;
-  width:280px;
-  height:130px;
-  background:url('https://cdn.pixabay.com/photo/2014/04/02/10/56/wood-306955_1280.png') center/cover no-repeat;
-  border-radius:16px;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  align-items:center;
-  padding:10px;
-  box-shadow:0 4px 10px rgba(0,0,0,.25);
-}
-.slot{
-  width:28px;height:28px;border-radius:8px;
-  background:rgba(255,255,255,.3);
-  margin:4px;font-size:22px;text-align:center;line-height:28px;
-  opacity:.25;transition:all .3s ease;cursor:pointer;
-}
-.slot.active{opacity:1;}
+  /* 🎴 Kart alanı */
+  .kart-alani {
+    margin-top: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+  }
 
-#flyStar{
-  position:absolute;width:60px;height:60px;background:gold;border-radius:50%;
-  box-shadow:0 0 12px rgba(255,215,0,.9);
-  top:50%;left:50%;
-  transform:translate(-50%,-50%) scale(0);
-  opacity:0;pointer-events:none;z-index:999;
-  transition:all .25s ease;
-}
+  .kart {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    width: 140px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    transition: transform 0.2s, background-color 0.2s;
+  }
+
+  .kart img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+
+  .alt-kart {
+    margin-top: 40px;
+  }
+
+  /* 🌟 Sembol barı */
+  .sembol-bar {
+    position: absolute;
+    bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sembol {
+    font-size: 30px;
+    opacity: 0.7;
+  }
+
+  .aktif {
+    opacity: 1;
+    transform: scale(1.2);
+    transition: 0.3s;
+  }
 </style>
 </head>
 <body>
 
-<!-- 🐻 Yönerge -->
-<div id="instructionBox">
-  <div id="animalTop"></div>
-  <div id="instructionPanel">
-    <div class="title">YÖNERGE :</div>
-    <div class="line" id="line1">- EŞLE</div>
-    <div class="line" id="line2">- AYNI OLANI EŞLE</div>
-    <div class="line" id="line3">- ELMAYI EŞLE</div>
+<!-- 🧸 Ayıcık ve yönerge kutusu -->
+<div class="yönerge-wrapper">
+  <img src="https://cdn.pixabay.com/photo/2020/04/29/17/52/bear-5111518_1280.png" class="ayıcık">
+  <div class="yönerge">
+    <h3>YÖNERGE :</h3>
+    <p>- EŞLE<br>- AYNI OLANI EŞLE<br>- ARABAYI EŞLE</p>
   </div>
 </div>
 
-<!-- Kartlar -->
-<div class="option-card" id="optionLeft">
-  <img id="leftImg" src=""><div class="label" id="leftLabel"></div>
-</div>
-<div class="option-card" id="optionRight">
-  <img id="rightImg" src=""><div class="label" id="rightLabel"></div>
-</div>
-<div class="card" id="dragCard">
-  <img id="dragImg" src=""><div class="label" id="dragLabel"></div>
-</div>
-
-<!-- Sembol Bar & Tahta -->
-<div id="poolBar">
-  <div class="pool-slot" id="p1"></div><div class="pool-slot" id="p2"></div>
-  <div class="pool-slot" id="p3"></div><div class="pool-slot" id="p4"></div>
-  <div class="pool-slot" id="p5"></div><div class="pool-slot" id="p6"></div>
-  <div class="pool-slot" id="p7"></div><div class="pool-slot" id="p8"></div>
-  <div class="pool-slot" id="p9"></div><div class="pool-slot" id="p10"></div>
+<!-- 🎴 Kart alanı -->
+<div class="kart-alani">
+  <div class="kart" id="ustKart1">
+    <img src="https://cdn.pixabay.com/photo/2012/04/12/20/12/car-30472_1280.png" alt="Araba">
+    <b>ARABA</b>
+  </div>
+  <div class="kart" id="ustKart2">
+    <img src="https://cdn.pixabay.com/photo/2016/03/05/22/08/apple-1239428_1280.png" alt="Elma">
+    <b>ELMA</b>
+  </div>
 </div>
 
-<div id="symbolBoard"></div>
-<div id="flyStar"></div>
+<div class="kart alt-kart" id="altKart">
+  <img src="https://cdn.pixabay.com/photo/2012/04/12/20/12/car-30472_1280.png" alt="Araba">
+  <b>ARABA</b>
+</div>
 
-<!-- Sesler -->
-<audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf4d03054b.mp3"></audio>
-<audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3"></audio>
-<audio id="praise" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c3b37f01ab.mp3"></audio>
+<!-- 🌟 Sembol barı -->
+<div class="sembol-bar" id="sembolBar">
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+  <span class="sembol">⭐</span>
+</div>
 
 <script>
-/* Nesne Havuzu */
-const poolData=[
-  {id:"elma",tr:"Elma"},
-  {id:"muz",tr:"Muz"},
-  {id:"armut",tr:"Armut"},
-  {id:"patlican",tr:"Patlıcan"},
-  {id:"domates",tr:"Domates"},
-  {id:"sarimsak",tr:"Sarımsak"},
-  {id:"araba",tr:"Araba"},
-  {id:"otobus",tr:"Otobüs"},
-  {id:"ucak",tr:"Uçak"},
-  {id:"kopek",tr:"Köpek"}
-];
+let sembolIndex = 0;
+const semboller = document.querySelectorAll(".sembol");
+const altKart = document.getElementById("altKart");
+const ustKart1 = document.getElementById("ustKart1");
+const ustKart2 = document.getElementById("ustKart2");
 
-const line3=document.getElementById("line3");
-const leftImg=document.getElementById("leftImg"), rightImg=document.getElementById("rightImg");
-const leftLabel=document.getElementById("leftLabel"), rightLabel=document.getElementById("rightLabel");
-const dragCard=document.getElementById("dragCard"), dragImg=document.getElementById("dragImg"), dragLabel=document.getElementById("dragLabel");
-const poolSlots=[...document.querySelectorAll(".pool-slot")];
-const boardSlots=[];
-const symbolBoard=document.getElementById("symbolBoard");
-const flyStar=document.getElementById("flyStar");
-for(let i=0;i<10;i++){let s=document.createElement("div");s.className="slot";symbolBoard.appendChild(s);boardSlots.push(s);}
+const kartlar = [ustKart1, ustKart2];
 
-let currentItem=null, wrongItem=null, attempt=1, boardCount=0, countingMode=false, counted=0;
-const praiseTexts=["Aferin","Bravo","Süpersin","Harika gidiyorsun"];
-function randomItem(){return poolData[Math.floor(Math.random()*poolData.length)]}
-function speakTR(t){if(!("speechSynthesis"in window))return;const u=new SpeechSynthesisUtterance(t);u.lang="tr-TR";speechSynthesis.speak(u);}
-function toAccusative(w){const v="aıoueiöü",l=w.toLowerCase("tr"),h=l.slice(-1),iv=v.includes(h);const lv=(l.match(/[aıoueöü]/g)||["a"]).slice(-1)[0];let e="ı";if(["e","i","ö","ü"].includes(lv))e="i";if(["o","u"].includes(lv))e="u";if(["a","ı"].includes(lv))e="ı";if(["ö","ü"].includes(lv))e="ü";if(iv)return w+"y"+e;return h==="k"&&(e==="i"||e==="ü")?w.slice(0,-1)+"ğ"+e:w+e;}
+altKart.addEventListener("click", () => {
+  // Simülasyon: Doğru kart seçimi
+  const dogruKart = ustKart1;
 
-function initPoolBar(){poolSlots.forEach(s=>{s.textContent="⭐";s.classList.add("active");});}
-function loadNew(){currentItem=randomItem();do{wrongItem=randomItem();}while(wrongItem.id===currentItem.id);attempt=1;renderQuestion(true);}
-function updateInstruction(){const acc=toAccusative(currentItem.tr).toUpperCase();line3.textContent=`- ${acc} EŞLE`;}
-function renderQuestion(sh){updateInstruction();const c={id:currentItem.id,tr:currentItem.tr,img:`assets/${currentItem.id}.png`},w={id:wrongItem.id,tr:wrongItem.tr,img:`assets/${wrongItem.id}.png`};let arr=[c,w];if(sh)arr.sort(()=>Math.random()-.5);
-leftImg.src=arr[0].img;leftImg.dataset.id=arr[0].id;leftLabel.textContent=arr[0].tr.toUpperCase();
-rightImg.src=arr[1].img;rightImg.dataset.id=arr[1].id;rightLabel.textContent=arr[1].tr.toUpperCase();
-dragImg.src=`assets/${currentItem.id}.png`;dragLabel.textContent=currentItem.tr.toUpperCase();resetDragPosition();}
-
-function resetDragPosition(){dragCard.style.transition="all .25s";dragCard.style.left="50%";dragCard.style.bottom="18%";dragCard.style.transform="translateX(-50%)";}
-function isOverlap(a,b){return!(a.right<b.left||a.left>b.right||a.bottom<b.top||a.top>b.bottom);}
-function handleCorrect(){const msg=praiseTexts[Math.floor(Math.random()*praiseTexts.length)];speakTR(msg);moveSymbol();if(attempt===1){setTimeout(()=>{swapCards();attempt=2;resetDragPosition();},500);}else setTimeout(()=>{loadNew();},500);}
-function moveSymbol(){const idx=poolSlots.findIndex(s=>s.classList.contains("active"));if(idx===-1)return;poolSlots[idx].classList.remove("active");poolSlots[idx].textContent="";
-flyStar.style.opacity=1;flyStar.style.transform="translate(-50%,-50%) scale(1)";
-setTimeout(()=>{flyStar.style.opacity=0;flyStar.style.transform="translate(-50%,-50%) scale(0)";},300);
-if(boardCount<10){boardSlots[boardCount].textContent="⭐";boardSlots[boardCount].classList.add("active");boardCount++;}
-if(boardCount===10){speakTR("Hadi sembolleri sayalım.");countingMode=true;counted=0;}}
-
-function swapCards(){[leftImg.src,rightImg.src]=[rightImg.src,leftImg.src];[leftImg.dataset.id,rightImg.dataset.id]=[rightImg.dataset.id,leftImg.dataset.id];[leftLabel.textContent,rightLabel.textContent]=[rightLabel.textContent,leftLabel.textContent];}
-boardSlots.forEach((s)=>{s.addEventListener("click",()=>{if(!countingMode||!s.classList.contains("active"))return;s.classList.remove("active");s.textContent="";boardCount--;counted++;
-const nums=["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];speakTR(nums[counted-1]);
-if(counted===10){setTimeout(()=>{speakTR("Aferin, tüm sembolleri topladın.");boardSlots.forEach(b=>{b.textContent="";b.classList.remove("active");});boardCount=0;countingMode=false;counted=0;initPoolBar();},700);}});});
-dragCard.onmousedown=e=>dragStart(e);dragCard.ontouchstart=e=>dragStart(e,{passive:false});
-let isDragging=false,sX=0,sY=0,sL=0,sT=0;
-function dragStart(e){e.preventDefault();isDragging=true;const p=e.touches?e.touches[0]:e;sX=p.clientX;sY=p.clientY;const r=dragCard.getBoundingClientRect();sL=r.left;sT=r.top;
-document.onmousemove=dragging;document.onmouseup=dragEnd;document.ontouchmove=dragging;document.ontouchend=dragEnd;}
-function dragging(e){if(!isDragging)return;const p=e.touches?e.touches[0]:e;const dx=p.clientX-sX,dy=p.clientY-sY;dragCard.style.left=(sL+dx)+"px";dragCard.style.top=(sT+dy)+"px";dragCard.style.transform="none";}
-function dragEnd(){if(!isDragging)return;isDragging=false;document.onmousemove=document.onmouseup=document.ontouchmove=document.ontouchend=null;
-const d=dragCard.getBoundingClientRect(),l=leftImg.getBoundingClientRect(),r=rightImg.getBoundingClientRect();const hitL=isOverlap(d,l),hitR=isOverlap(d,r);
-if(hitL||hitR){const chosen=hitL?leftImg.dataset.id:rightImg.dataset.id;if(chosen===currentItem.id)handleCorrect();else resetDragPosition();}else resetDragPosition();}
-
-window.onload=()=>{initPoolBar();loadNew();};
+  dogruKart.style.backgroundColor = "#b8f7b8"; // yeşil yanma efekti
+  if (sembolIndex < semboller.length) {
+    semboller[sembolIndex].classList.add("aktif");
+    sembolIndex++;
+  }
+  setTimeout(() => dogruKart.style.backgroundColor = "white", 800);
+});
 </script>
+
 </body>
 </html>
