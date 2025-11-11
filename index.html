@@ -19,22 +19,22 @@ body{
   position:relative;
 }
 
-/* Kedi tabelası */
+/* Hayvan tabelalı yönerge */
 #instructionBox{
   position:absolute;
   top:10px;
   left:10px;
   width:260px;
-  padding-top:55px; /* kedi için boşluk */
+  padding-top:60px; /* hayvan için boşluk */
   z-index:20;
 }
-#catTop{
+#animalTop{
   position:absolute;
   top:-10px;
   left:50%;
   transform:translateX(-50%);
-  width:90px;
-  height:70px;
+  width:100px;
+  height:80px;
   background:url("https://cdn.pixabay.com/photo/2017/01/31/20/26/cat-2022343_1280.png") center/contain no-repeat;
   pointer-events:none;
 }
@@ -48,10 +48,12 @@ body{
 #instructionPanel .title{
   font-weight:700;
   margin-bottom:4px;
+  text-transform:uppercase;
 }
 #instructionPanel .line{
   font-size:13px;
   margin-bottom:2px;
+  text-transform:uppercase;
 }
 
 /* üstteki sabit kartlar */
@@ -99,7 +101,7 @@ body{
   align-items:center;
   justify-content:flex-start;
   position:absolute;
-  bottom:22%;
+  bottom:18%;        /* biraz daha aşağı çekildi */
   left:50%;
   transform:translateX(-50%);
   cursor:grab;
@@ -117,7 +119,7 @@ body{
 /* SABİT sembol bar (karttan bağımsız!) */
 #poolBar{
   position:fixed;
-  bottom:15%;
+  bottom:10%;           /* biraz daha aşağıya alındı */
   left:50%;
   transform:translateX(-50%);
   display:flex;
@@ -185,14 +187,14 @@ body{
 </head>
 <body>
 
-<!-- Kedi tabelalı yönerge -->
+<!-- Hayvan tabelalı yönerge -->
 <div id="instructionBox">
-  <div id="catTop"></div>
+  <div id="animalTop"></div>
   <div id="instructionPanel">
     <div class="title">YÖNERGE :</div>
-    <div class="line" id="line1">Eşle</div>
-    <div class="line" id="line2">Aynı olanı eşle</div>
-    <div class="line" id="line3">Elmayı eşle</div>
+    <div class="line" id="line1">- EŞLE</div>
+    <div class="line" id="line2">- AYNI OLANI EŞLE</div>
+    <div class="line" id="line3">- ELMAYI EŞLE</div>
   </div>
 </div>
 
@@ -286,7 +288,7 @@ for(let i=0;i<10;i++){
 let currentItem=null;
 let wrongItem=null;
 let attempt=1;
-let poolCount=10;  // sabit 10
+let poolCount=10;
 let boardCount=0;
 let countingMode=false;
 let counted=0;
@@ -294,7 +296,7 @@ let isDragging=false;
 let startX=0,startY=0,startLeft=0,startTop=0;
 
 /* pekiştireç sesleri */
-const praiseTexts=["Aferin","Bravo","Süpersin","Harika gidiyorsun"];
+const praiseTexts=["Aferin","Bravo","Süpersin","Harika Gidiyorsun"];
 
 /* yardımcılar */
 function randomItem(){return poolData[Math.floor(Math.random()*poolData.length)]}
@@ -304,16 +306,11 @@ function speakTR(text){
   u.lang="tr-TR";
   speechSynthesis.speak(u);
 }
-
-/* belirtme hali üretimi */
 function toAccusative(word){
-  // çok kaba ama işimizi görür:
   const lower=word.toLowerCase("tr");
   const vowels="aıoueiöü";
-  // son harf ünlü mü?
   const last=lower.charAt(lower.length-1);
   const isVowel=vowels.includes(last);
-  // son ünlüye göre ek seçelim
   const lastVowel=(lower.match(/[aıoueöü]/g)||["a"]).slice(-1)[0];
   let ek="ı";
   if(["e","i","ö","ü"].includes(lastVowel)) ek="i";
@@ -323,7 +320,6 @@ function toAccusative(word){
   if(isVowel){
     return word + "y" + ek;
   }else{
-    // köpek -> köpeği
     if(last==="k" && (ek==="i"||ek==="ü")){
       return word.slice(0,-1) + "ğ" + ek;
     }
@@ -347,10 +343,10 @@ function loadNew(){
 
 /* yönergeyi güncelle */
 function updateInstruction(){
-  line1.textContent="Eşle";
-  line2.textContent="Aynı olanı eşle";
+  line1.textContent="- EŞLE";
+  line2.textContent="- AYNI OLANI EŞLE";
   const acc=toAccusative(currentItem.tr);
-  line3.textContent= acc + " ";
+  line3.textContent="- " + acc.toUpperCase();
 }
 
 /* soruyu ekrana bas */
@@ -373,7 +369,7 @@ function renderQuestion(shuffle){
 function resetDragPosition(){
   dragCard.style.transition="all .25s ease";
   dragCard.style.left="50%";
-  dragCard.style.bottom="22%";
+  dragCard.style.bottom="18%";
   dragCard.style.top="";
   dragCard.style.transform="translateX(-50%)";
 }
@@ -435,10 +431,8 @@ function handleCorrect(){
   dragCard.classList.add("correct");
   correctSound.currentTime=0;
   correctSound.play().catch(()=>{});
-  // random pekiştireç
   const msg=praiseTexts[Math.floor(Math.random()*praiseTexts.length)];
   speakTR(msg);
-  // sembol taşı
   moveOneSymbolToBoard();
 
   if(attempt===1){
@@ -473,17 +467,15 @@ function swapTopCards(){
   rightImg.src=tSrc;rightLabel.textContent=tLabel;rightImg.dataset.id=tId;
 }
 
-/* 1 sembolü havuzdan al tahtaya koy */
+/* sembol taşı */
 function moveOneSymbolToBoard(){
   if(poolCount<=0) return;
-  // havuzdan ilk aktif olanı bul
   const idx=poolSlots.findIndex(s=>s.classList.contains("active"));
   if(idx===-1) return;
   poolSlots[idx].classList.remove("active");
   poolSlots[idx].textContent="";
   poolCount--;
 
-  // animasyon
   flyStar.style.opacity=1;
   flyStar.style.transform="translate(-50%,-50%) scale(1)";
   setTimeout(()=>{
@@ -491,7 +483,6 @@ function moveOneSymbolToBoard(){
     flyStar.style.transform="translate(-50%,-50%) scale(0)";
   },300);
 
-  // tahtaya ekle
   if(boardCount<10){
     boardSlots[boardCount].textContent="⭐";
     boardSlots[boardCount].classList.add("active");
@@ -518,7 +509,6 @@ boardSlots.forEach((slot)=>{
     const nums=["bir","iki","üç","dört","beş","altı","yedi","sekiz","dokuz","on"];
     speakTR(nums[counted-1]);
 
-    // havuzda boş olan ilk yere geri koy
     const emptyIdx=poolSlots.findIndex(s=>!s.classList.contains("active"));
     if(emptyIdx!==-1){
       poolSlots[emptyIdx].classList.add("active");
@@ -530,12 +520,10 @@ boardSlots.forEach((slot)=>{
       setTimeout(()=>{
         speakTR("Aferin, tüm sembolleri topladın.");
         praiseSound.play().catch(()=>{});
-        // tüm tahtayı temizle, havuzu da resetle
         boardSlots.forEach(b=>{b.textContent="";b.classList.remove("active");});
         boardCount=0;
         countingMode=false;
         counted=0;
-        // havuzu tamla
         initPoolBar();
       },700);
     }
