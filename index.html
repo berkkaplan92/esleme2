@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Pika & Berk – V22.6 Final</title>
+<title>Pika & Berk – V22.7</title>
 <style>
 :root{
-  --card-w:160px;
-  --card-h:200px;
+  --card-w:170px;
+  --card-h:220px;
 }
 *{box-sizing:border-box;}
 body{
@@ -22,159 +22,87 @@ body{
 /* YÖNERGE */
 #instructionBox{
   position:absolute;
-  top:50px;
-  left:40px;
-  background:#fff9e6;
-  border:3px solid #f6c453;
-  border-radius:14px;
-  padding:10px 14px;
-  box-shadow:0 3px 8px rgba(0,0,0,.12);
-  z-index:20;
-  min-width:210px;
+  top:50px; left:40px;
+  background:#fff9e6; border:3px solid #f6c453; border-radius:14px;
+  padding:10px 14px; box-shadow:0 3px 8px rgba(0,0,0,.12);
+  z-index:20; min-width:210px;
 }
-#instructionBox .title{
-  font-weight:700;
-  margin-bottom:4px;
-}
-#instructionBox .line{
-  font-weight:700;
-  font-size:13px;
-  text-transform:uppercase;
-  margin:1px 0;
-}
+#instructionBox .title{ font-weight:700; margin-bottom:4px; }
+#instructionBox .line{ font-weight:700; font-size:13px; text-transform:uppercase; margin:1px 0; }
 
-/* üstteki sabit kartlar */
+/* Üst seçenek kartları */
 .option-card{
-  width:var(--card-w);
-  height:var(--card-h);
-  background:#fff;
-  border:3px solid rgba(11,132,165,.4);
-  border-radius:16px;
+  width:var(--card-w); height:var(--card-h);
+  background:#fff; border:3px solid rgba(11,132,165,.4); border-radius:16px;
   box-shadow:0 4px 10px rgba(0,0,0,.15);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  position:absolute;
-  transition:all .35s ease;
-  user-select:none;
-  z-index:10;
+  position:absolute; display:flex; flex-direction:column; align-items:center;
+  padding:6px 8px; user-select:none; z-index:10;
 }
-/* biraz daha yaklaştırdık */
-#optionLeft{top:14%;left:25%;}
-#optionRight{top:14%;right:25%;}
-.option-card img{
-  width:100px;height:100px;object-fit:contain;margin-top:4px;pointer-events:none;
+#optionLeft{ top:14%; left:27%; }   /* bir tık daha merkeze yaklaştı */
+#optionRight{ top:14%; right:23%; } /* bir tık daha merkeze yaklaştı */
+.card-tr{
+  margin-top:2px; font-weight:800; text-transform:uppercase; text-align:center; font-size:14px;
 }
-.label-tr-top{
-  font-weight:700;
-  text-transform:uppercase;
-  margin-top:4px;
-  text-align:center;
+.card-img{
+  width:120px; height:120px; object-fit:contain; margin:6px 0; pointer-events:none;
 }
-.label-en-bottom{
-  font-size:12px;
-  text-align:center;
-  margin-top:2px;
-  opacity:.8;
+.card-en{
+  font-size:12px; font-style:italic; text-align:center; opacity:.85; margin-bottom:2px;
 }
 
-/* alttaki sürüklenen kart */
+/* Sürüklenen kart (alt kart) */
 #dragCard{
-  width:var(--card-w);
-  height:var(--card-h);
-  background:#fff;
-  border:3px solid rgba(11,132,165,.6);
-  border-radius:16px;
+  width:var(--card-w); height:var(--card-h);
+  background:#fff; border:3px solid rgba(11,132,165,.6); border-radius:16px;
   box-shadow:0 6px 10px rgba(0,0,0,.35);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  position:absolute;
-  bottom:18%;
-  left:50%;
-  transform:translateX(-50%);
-  cursor:grab;
-  user-select:none;
-  touch-action:none;
-  z-index:200;
-  transition:box-shadow .15s ease,border-color .15s ease;
+  position:absolute; bottom:18%; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; padding:6px 8px;
+  cursor:grab; user-select:none; touch-action:none; z-index:200;
+  transition:box-shadow .15s ease, border-color .15s ease;
 }
-#dragCard img{
-  width:100px;height:100px;object-fit:contain;margin-top:4px;pointer-events:none;
-}
-.correct{border-color:#2ecc71!important;box-shadow:0 0 18px rgba(46,204,113,.9)!important;}
-.wrong{border-color:#e74c3c!important;box-shadow:0 0 18px rgba(231,76,60,.9)!important;}
+.correct{ border-color:#2ecc71!important; box-shadow:0 0 18px rgba(46,204,113,.9)!important; }
+.wrong{ border-color:#e74c3c!important; box-shadow:0 0 18px rgba(231,76,60,.9)!important; }
 
-/* SABİT sembol bar – kartın altında, hareket etmiyor */
+/* SABİT sembol barı – kartın altında, soldan sağa azalır */
 #symbolBar{
-  position:absolute;
-  bottom:10%;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:5px;
-  background:rgba(255,255,255,.55);
-  padding:5px 10px;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
-  z-index:120;
+  position:absolute; bottom:10%; left:50%; transform:translateX(-50%);
+  display:flex; gap:6px; background:rgba(255,255,255,.6);
+  padding:6px 10px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,.15); z-index:120;
 }
 .bar-slot{
-  width:20px;height:20px;
-  background:rgba(255,255,255,.3);
-  border-radius:5px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;
+  width:22px; height:22px; border-radius:6px;
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+  background:rgba(255,255,255,.95); transition:opacity .25s ease, transform .25s ease;
 }
-.bar-slot.active{background:rgba(255,255,255,.95);}
+.bar-slot.empty{ opacity:.25; transform:scale(.9); }
 
-/* sağ alttaki AHŞAP sembol tahtası */
+/* Sağ alttaki ahşap sembol tahtası */
 #symbolBoard{
-  position:absolute;
-  bottom:20px;
-  right:20px;
-  width:260px;
-  height:110px;
+  position:absolute; bottom:20px; right:20px;
+  width:270px; height:120px;
   background:url('https://cdn.pixabay.com/photo/2014/04/02/10/56/wood-306955_1280.png') center/cover no-repeat;
-  border-radius:16px;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  align-items:center;
-  gap:6px;
-  padding:10px;
-  box-shadow:0 4px 10px rgba(0,0,0,.25);
+  border-radius:16px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
+  gap:6px; padding:10px; box-shadow:0 4px 10px rgba(0,0,0,.25);
 }
 .slot{
-  width:30px;height:30px;border-radius:8px;
-  background:rgba(255,255,255,.25);
-  text-align:center;line-height:30px;font-size:22px;
-  opacity:.25;transition:all .25s ease;
-  cursor:pointer;
+  width:30px; height:30px; border-radius:8px; background:rgba(255,255,255,.25);
+  text-align:center; line-height:30px; font-size:22px; opacity:.25; transition:all .25s ease; cursor:pointer;
 }
-.slot.active{opacity:1;transform:scale(1.05);}
+.slot.active{ opacity:1; transform:scale(1.06); }
 
-/* uçan yıldız – bar’dan değil ekrandan tahtaya kayıyor */
+/* Uçan yıldız (ekrandan tahtaya kayma) */
 #flyStar{
-  position:absolute;
-  width:40px;height:40px;
-  background:gold;border-radius:50%;
+  position:absolute; width:40px; height:40px; background:gold; border-radius:50%;
   box-shadow:0 0 12px rgba(255,215,0,.9);
-  top:50%;left:50%;
-  transform:translate(-50%,-50%) scale(0);
-  opacity:0;
-  pointer-events:none;
-  z-index:999;
-  transition:all .35s ease;
+  top:50%; left:50%; transform:translate(-50%,-50%) scale(0);
+  opacity:0; pointer-events:none; z-index:999; transition:all .35s ease;
 }
 
 @media (max-width:540px){
-  #optionLeft{left:8%;}
-  #optionRight{right:8%;}
-  #instructionBox{left:10px;top:30px;}
-  #symbolBar{bottom:12%;}
+  #optionLeft{ left:10%; }
+  #optionRight{ right:10%; }
+  #instructionBox{ left:10px; top:30px; }
+  #symbolBar{ bottom:12%; }
 }
 </style>
 </head>
@@ -188,23 +116,23 @@ body{
   <div class="line" id="line3">- ELMAYI EŞLE</div>
 </div>
 
-<!-- Üstteki iki kart -->
+<!-- Üst seçenekler -->
 <div class="option-card" id="optionLeft">
-  <img id="leftImg" src="">
-  <div class="label-tr-top" id="leftTr"></div>
-  <div class="label-en-bottom" id="leftEn"></div>
+  <div class="card-tr" id="leftTr"></div>
+  <img class="card-img" id="leftImg" src="">
+  <div class="card-en" id="leftEn"></div>
 </div>
 <div class="option-card" id="optionRight">
-  <img id="rightImg" src="">
-  <div class="label-tr-top" id="rightTr"></div>
-  <div class="label-en-bottom" id="rightEn"></div>
+  <div class="card-tr" id="rightTr"></div>
+  <img class="card-img" id="rightImg" src="">
+  <div class="card-en" id="rightEn"></div>
 </div>
 
-<!-- Alttaki sürüklenen kart -->
+<!-- Alt sürüklenen kart -->
 <div id="dragCard">
-  <img id="dragImg" src="">
-  <div class="label-tr-top" id="dragTr"></div>
-  <div class="label-en-bottom" id="dragEn"></div>
+  <div class="card-tr" id="dragTr"></div>
+  <img class="card-img" id="dragImg" src="">
+  <div class="card-en" id="dragEn"></div>
 </div>
 
 <!-- SABİT sembol barı (8’li) -->
@@ -231,7 +159,7 @@ body{
   <div class="slot" id="s8"></div>
 </div>
 
-<!-- Uçan sembol -->
+<!-- Uçan ⭐ -->
 <div id="flyStar"></div>
 
 <!-- Sesler -->
@@ -239,7 +167,7 @@ body{
 <audio id="wrongSound"   src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_21cda77a64.mp3"></audio>
 
 <script>
-/* 50 NESNELİ HAVUZ */
+/* 50 NESNE (TR-EN, assets/*.png) */
 const ITEMS = [
   // meyveler
   {id:"elma", tr:"Elma", en:"Apple"},
@@ -274,7 +202,7 @@ const ITEMS = [
   {id:"tren", tr:"Tren", en:"Train"},
   {id:"otobus", tr:"Otobüs", en:"Bus"},
   {id:"itfaiye_arabasi", tr:"İtfaiye Arabası", en:"Fire Truck"},
-  // hayvanlar (20)
+  // hayvanlar
   {id:"aslan", tr:"Aslan", en:"Lion"},
   {id:"kaplan", tr:"Kaplan", en:"Tiger"},
   {id:"kedi", tr:"Kedi", en:"Cat"},
@@ -297,8 +225,8 @@ const ITEMS = [
   {id:"yunus", tr:"Yunus", en:"Dolphin"},
 ];
 
+/* Elemanlar */
 const instructionLine3 = document.getElementById("line3");
-
 const optionLeft = document.getElementById("optionLeft");
 const optionRight = document.getElementById("optionRight");
 const leftImg = document.getElementById("leftImg");
@@ -314,309 +242,220 @@ const dragTr = document.getElementById("dragTr");
 const dragEn = document.getElementById("dragEn");
 
 const barSlots = [
-  document.getElementById("b1"),
-  document.getElementById("b2"),
-  document.getElementById("b3"),
-  document.getElementById("b4"),
-  document.getElementById("b5"),
-  document.getElementById("b6"),
-  document.getElementById("b7"),
-  document.getElementById("b8"),
+  document.getElementById("b1"), document.getElementById("b2"), document.getElementById("b3"), document.getElementById("b4"),
+  document.getElementById("b5"), document.getElementById("b6"), document.getElementById("b7"), document.getElementById("b8"),
 ];
-
-const symbolBoard = document.getElementById("symbolBoard");
 const boardSlots = [
-  document.getElementById("s1"),
-  document.getElementById("s2"),
-  document.getElementById("s3"),
-  document.getElementById("s4"),
-  document.getElementById("s5"),
-  document.getElementById("s6"),
-  document.getElementById("s7"),
-  document.getElementById("s8"),
+  document.getElementById("s1"), document.getElementById("s2"), document.getElementById("s3"), document.getElementById("s4"),
+  document.getElementById("s5"), document.getElementById("s6"), document.getElementById("s7"), document.getElementById("s8"),
 ];
 
 const flyStar = document.getElementById("flyStar");
 const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 
-let currentItem = null;
-let wrongItem = null;
-let attempt = 1;
-let collected = 0;
-let countingMode = false;
-let counted = 0;
+/* Durumlar */
+let currentItem=null, wrongItem=null, attempt=1;
+let collected=0; // tahtadaki sayısı
+let countingMode=false, counted=0;
 
-// pekiştireçler
-const praiseTexts = ["Aferin","Bravo","Süpersin","Harika gidiyorsun"];
-// sayma sesini speechSynthesis ile yapacağız
+/* Pekiştireçler */
+const praiseTexts=["Aferin","Bravo","Süpersin","Harika gidiyorsun"];
 
-function randomItem(){
-  return ITEMS[Math.floor(Math.random()*ITEMS.length)];
-}
-
+/* Yardımcılar */
+function randomItem(){ return ITEMS[Math.floor(Math.random()*ITEMS.length)]; }
 function toAccusative(word){
-  const lower = word.toLowerCase("tr");
-  const vowels = "aıoueiöü";
-  const last = lower.charAt(lower.length-1);
-  const isVowel = vowels.includes(last);
-  const lastVowel = (lower.match(/[aıoueöü]/g)||["a"]).slice(-1)[0];
-  let ek="ı";
-  if(["e","i","ö","ü"].includes(lastVowel)) ek="i";
-  if(["o","u"].includes(lastVowel)) ek="u";
-  if(["a","ı"].includes(lastVowel)) ek="ı";
+  const lower=word.toLowerCase("tr"); const vowels="aıoueiöü";
+  const last=lower.charAt(lower.length-1); const isVowel=vowels.includes(last);
+  const lastVowel=(lower.match(/[aıoueöü]/g)||["a"]).slice(-1)[0];
+  let ek="ı"; if(["e","i","ö","ü"].includes(lastVowel)) ek="i";
+  if(["o","u"].includes(lastVowel)) ek="u"; if(["a","ı"].includes(lastVowel)) ek="ı";
   if(["ö","ü"].includes(lastVowel)) ek="ü";
-  if(isVowel){
-    return word+"y"+ek;
-  }else{
-    if(last==="k" && (ek==="i"||ek==="ü")){
-      return word.slice(0,-1)+"ğ"+ek;
-    }
-    return word+ek;
-  }
+  if(isVowel) return word+"y"+ek;
+  if(last==="k"&&(ek==="i"||ek==="ü")) return word.slice(0,-1)+"ğ"+ek;
+  return word+ek;
 }
+function speakTR(t){ if(!("speechSynthesis" in window)) return; const u=new SpeechSynthesisUtterance(t); u.lang="tr-TR"; speechSynthesis.speak(u); }
 
 function updateInstruction(){
-  const acc = toAccusative(currentItem.tr).toUpperCase();
-  instructionLine3.textContent = "- " + acc + " EŞLE";
+  const acc=toAccusative(currentItem.tr).toUpperCase();
+  instructionLine3.textContent="- "+acc+" EŞLE";
 }
 
 function renderQuestion(shuffle=true){
   updateInstruction();
-  const correct = currentItem;
-  const wrong = wrongItem;
-  let arr = [correct, wrong];
-  if(shuffle) arr.sort(()=>Math.random()-.5);
+  const correct=currentItem, wrong=wrongItem;
+  let arr=[correct,wrong]; if(shuffle) arr.sort(()=>Math.random()-.5);
 
-  // sol
-  const l = arr[0];
-  leftImg.src = `assets/${l.id}.png`;
-  leftTr.textContent = l.tr.toUpperCase();
-  leftEn.textContent = l.en.toUpperCase();
-  leftImg.dataset.id = l.id;
+  // SOL
+  const l=arr[0];
+  leftTr.textContent=l.tr.toUpperCase();
+  leftImg.src=`assets/${l.id}.png`;
+  leftEn.textContent=l.en.toLowerCase();
+  leftImg.dataset.id=l.id;
 
-  // sağ
-  const r = arr[1];
-  rightImg.src = `assets/${r.id}.png`;
-  rightTr.textContent = r.tr.toUpperCase();
-  rightEn.textContent = r.en.toUpperCase();
-  rightImg.dataset.id = r.id;
+  // SAĞ
+  const r=arr[1];
+  rightTr.textContent=r.tr.toUpperCase();
+  rightImg.src=`assets/${r.id}.png`;
+  rightEn.textContent=r.en.toLowerCase();
+  rightImg.dataset.id=r.id;
 
-  // drag
-  dragImg.src = `assets/${currentItem.id}.png`;
-  dragTr.textContent = currentItem.tr.toUpperCase();
-  dragEn.textContent = currentItem.en.toUpperCase();
+  // ALT (drag)
+  dragTr.textContent=currentItem.tr.toUpperCase();
+  dragImg.src=`assets/${currentItem.id}.png`;
+  dragEn.textContent=currentItem.en.toLowerCase();
 
   resetDragPosition();
 }
 
 function loadNew(){
-  currentItem = randomItem();
-  do { wrongItem = randomItem(); } while(wrongItem.id === currentItem.id);
-  attempt = 1;
-  renderQuestion(true);
+  currentItem=randomItem();
+  do{ wrongItem=randomItem(); }while(wrongItem.id===currentItem.id);
+  attempt=1; renderQuestion(true);
 }
 
 function resetDragPosition(){
-  dragCard.style.transition = "all .25s ease";
-  dragCard.style.left = "50%";
-  dragCard.style.bottom = "18%";
-  dragCard.style.top = "";
-  dragCard.style.transform = "translateX(-50%)";
+  dragCard.style.transition="all .25s ease";
+  dragCard.style.left="50%"; dragCard.style.bottom="18%"; dragCard.style.top="";
+  dragCard.style.transform="translateX(-50%)";
 }
 
 /* DRAG */
 let isDragging=false,startX=0,startY=0,startLeft=0,startTop=0;
-
 dragCard.addEventListener("mousedown",dragStart);
 dragCard.addEventListener("touchstart",dragStart,{passive:false});
-
 function dragStart(e){
-  e.preventDefault();
-  isDragging=true;
-  const p=e.touches?e.touches[0]:e;
-  startX=p.clientX; startY=p.clientY;
-  const rect=dragCard.getBoundingClientRect();
-  startLeft=rect.left; startTop=rect.top;
-  dragCard.style.transition="none";
-  dragCard.style.cursor="grabbing";
-
+  e.preventDefault(); isDragging=true;
+  const p=e.touches?e.touches[0]:e; startX=p.clientX; startY=p.clientY;
+  const rect=dragCard.getBoundingClientRect(); startLeft=rect.left; startTop=rect.top;
+  dragCard.style.transition="none"; dragCard.style.cursor="grabbing";
   document.addEventListener("mousemove",dragging);
   document.addEventListener("touchmove",dragging,{passive:false});
   document.addEventListener("mouseup",dragEnd);
   document.addEventListener("touchend",dragEnd);
 }
-
 function dragging(e){
   if(!isDragging) return;
-  const p=e.touches?e.touches[0]:e;
-  const dx=p.clientX-startX;
-  const dy=p.clientY-startY;
-  dragCard.style.left=(startLeft+dx)+"px";
-  dragCard.style.top=(startTop+dy)+"px";
-  dragCard.style.transform="none";
+  const p=e.touches?e.touches[0]:e; const dx=p.clientX-startX; const dy=p.clientY-startY;
+  dragCard.style.left=(startLeft+dx)+"px"; dragCard.style.top=(startTop+dy)+"px"; dragCard.style.transform="none";
 }
-
 function dragEnd(){
-  if(!isDragging) return;
-  isDragging=false;
-  dragCard.style.cursor="grab";
+  if(!isDragging) return; isDragging=false; dragCard.style.cursor="grab";
   document.removeEventListener("mousemove",dragging);
   document.removeEventListener("touchmove",dragging);
   document.removeEventListener("mouseup",dragEnd);
   document.removeEventListener("touchend",dragEnd);
 
-  const dRect=dragCard.getBoundingClientRect();
-  const lRect=optionLeft.getBoundingClientRect();
-  const rRect=optionRight.getBoundingClientRect();
-  const hitL=isOverlap(dRect,lRect);
-  const hitR=isOverlap(dRect,rRect);
+  const d=dragCard.getBoundingClientRect(), l=optionLeft.getBoundingClientRect(), r=optionRight.getBoundingClientRect();
+  const hitL=!(d.right<l.left||d.left>l.right||d.bottom<l.top||d.top>l.bottom);
+  const hitR=!(d.right<r.left||d.left>r.right||d.bottom<r.top||d.top>r.bottom);
 
   if(hitL||hitR){
     const chosen = hitL ? leftImg.dataset.id : rightImg.dataset.id;
-    if(chosen === currentItem.id){
-      handleCorrect();
-    } else {
-      handleWrong();
-    }
-  } else {
-    resetDragPosition();
-  }
-}
-
-function isOverlap(a,b){
-  return !(a.right<b.left||a.left>b.right||a.bottom<b.top||a.top>b.bottom);
-}
-
-/* SES */
-function speakTR(text){
-  if(!("speechSynthesis" in window)) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="tr-TR";
-  speechSynthesis.speak(u);
+    if(chosen===currentItem.id) handleCorrect(); else handleWrong();
+  }else resetDragPosition();
 }
 
 /* DOĞRU/YANLIŞ */
 function handleCorrect(){
   dragCard.classList.add("correct");
-  correctSound.currentTime=0;
-  correctSound.play().catch(()=>{});
-  // random pekiştireç
-  const msg = praiseTexts[Math.floor(Math.random()*praiseTexts.length)];
-  speakTR(msg);
-
-  // sembol işle
+  correctSound.currentTime=0; correctSound.play().catch(()=>{});
+  speakTR(praiseTexts[Math.floor(Math.random()*praiseTexts.length)]);
   gainSymbol();
 
   if(attempt===1){
-    setTimeout(()=>{
-      dragCard.classList.remove("correct");
-      swapTopCards();
-      attempt=2;
-      resetDragPosition();
-    },500);
-  } else {
-    setTimeout(()=>{
-      dragCard.classList.remove("correct");
-      loadNew();
-    },500);
+    setTimeout(()=>{ dragCard.classList.remove("correct"); swapTopCards(); attempt=2; resetDragPosition(); },500);
+  }else{
+    setTimeout(()=>{ dragCard.classList.remove("correct"); loadNew(); },500);
   }
 }
-
 function handleWrong(){
   dragCard.classList.add("wrong");
-  wrongSound.currentTime=0;
-  wrongSound.play().catch(()=>{});
-  setTimeout(()=>{
-    dragCard.classList.remove("wrong");
-    resetDragPosition();
-  },500);
+  wrongSound.currentTime=0; wrongSound.play().catch(()=>{});
+  setTimeout(()=>{ dragCard.classList.remove("wrong"); resetDragPosition(); },500);
 }
-
 function swapTopCards(){
   const lsrc=leftImg.src, lid=leftImg.dataset.id, ltr=leftTr.textContent, len=leftEn.textContent;
   leftImg.src=rightImg.src; leftImg.dataset.id=rightImg.dataset.id; leftTr.textContent=rightTr.textContent; leftEn.textContent=rightEn.textContent;
   rightImg.src=lsrc; rightImg.dataset.id=lid; rightTr.textContent=ltr; rightEn.textContent=len;
 }
 
-/* Sembol kazanma: bar sabit, ekranda yıldız belirip tahtaya kayıyor */
+/* SEMBOL SİSTEMİ – Bar soldan sağa azalır, ⭐ tahtaya gider; sonra sayarak bar’a döner */
+let collectedOnBoard=0; // tahtadaki aktif sayısı
+initBar();
+
+function initBar(){
+  barSlots.forEach(s=>s.classList.remove("empty")); // hepsi dolu başlar
+}
+function firstFilledBarIndex(){
+  return barSlots.findIndex(s=>!s.classList.contains("empty"));
+}
+function firstEmptyBarIndex(){
+  return barSlots.findIndex(s=>s.classList.contains("empty"));
+}
 function gainSymbol(){
-  if(collected>=8) return;
+  if(collectedOnBoard>=8) return;
 
-  // bar’da göster (aktif yap)
-  barSlots[collected].classList.add("active");
+  // 1) BAR’dan bir ⭐ eksilt (soldan sağa)
+  const i = firstFilledBarIndex();
+  if(i!==-1){ barSlots[i].classList.add("empty"); }
 
-  // uçan yıldız animasyonu
-  flyStar.style.top = "65%";
-  flyStar.style.left = "50%";
-  flyStar.style.opacity = 1;
-  flyStar.style.transform = "translate(-50%,-50%) scale(1)";
-  // hedef: sağ alttaki tahtanın ortası
+  // 2) Uçan yıldız animasyonu → tahtaya
+  flyStar.style.top="65%"; flyStar.style.left="50%";
+  flyStar.style.opacity=1; flyStar.style.transform="translate(-50%,-50%) scale(1)";
   setTimeout(()=>{
-    flyStar.style.top = "82%";
-    flyStar.style.left = "88%";
-    flyStar.style.opacity = 0;
-    flyStar.style.transform = "translate(-50%,-50%) scale(.3)";
+    flyStar.style.top="82%"; flyStar.style.left="88%";
+    flyStar.style.opacity=0; flyStar.style.transform="translate(-50%,-50%) scale(.3)";
   },100);
 
-  // tahtadaki slotu doldur
+  // 3) Tahtaya yerleştir
   setTimeout(()=>{
-    boardSlots[collected].textContent="⭐";
-    boardSlots[collected].classList.add("active");
-    collected++;
-    // 8 olduysa sayma moduna geç
-    if(collected===8){
-      setTimeout(()=>{
-        speakTR("Hadi sembolleri sayalım.");
-        countingMode=true;
-        counted=0;
-      },500);
+    boardSlots[collectedOnBoard].textContent="⭐";
+    boardSlots[collectedOnBoard].classList.add("active");
+    collectedOnBoard++;
+
+    // 8 olunca sayma modu
+    if(collectedOnBoard===8){
+      setTimeout(()=>{ speakTR("Hadi sembolleri sayalım."); countingMode=true; counted=0; },500);
     }
   },400);
 }
 
-/* Tahtadaki sembollere tıklayıp sayma ve bar’a geri gönderme */
+/* Tahtada sayma → bar’a geri gönderme */
 boardSlots.forEach((slot,idx)=>{
   slot.addEventListener("click", ()=>{
     if(!countingMode) return;
     if(!slot.classList.contains("active")) return;
 
-    // sembolü tahtadan sil
+    // 1) Tahtadan kaldır
     slot.classList.remove("active");
     slot.textContent="";
+    collectedOnBoard--;
     counted++;
 
-    // sayıyı seslendir
-    const numbers = ["bir","iki","üç","dört","beş","altı","yedi","sekiz"];
+    // 2) Sayıyı seslendir
+    const numbers=["bir","iki","üç","dört","beş","altı","yedi","sekiz"];
     speakTR(numbers[counted-1]);
 
-    // bar’da boşalan ilk yeri bul ve pasif yapma yerine "geri döndü" gibi gösterelim
-    // burada mantık: çocuk saydıkça semboller bar’a "geri geliyor"
-    const firstInactive = barSlots.findIndex(bs => !bs.classList.contains("active"));
-    if(firstInactive !== -1){
-      barSlots[firstInactive].classList.add("active");
-    }
+    // 3) BAR’a geri ekle (soldan boş ilk yer)
+    const j = firstEmptyBarIndex();
+    if(j!==-1){ barSlots[j].classList.remove("empty"); }
 
-    // eğer 8. sembolü de saydıysa final
+    // 4) Bittiyse final
     if(counted===8){
       setTimeout(()=>{
         speakTR("Bravo! Tüm sembolleri topladın.");
-        // resetle
-        collected=0;
-        countingMode=false;
-        counted=0;
-        // bar ve tahta temizlensin
-        barSlots.forEach(bs=>bs.classList.remove("active"));
-        boardSlots.forEach(bs=>{bs.classList.remove("active");bs.textContent="";});
-      },700);
+        // reset
+        countingMode=false; counted=0; collectedOnBoard=0;
+        // Tahtayı zaten temizledik tıklamalarla; bar full dolu
+      },600);
     }
   });
 });
 
-/* başlangıç */
-window.addEventListener("load", ()=>{
-  loadNew();
-});
+/* BAŞLANGIÇ */
+window.addEventListener("load", ()=>{ loadNew(); });
 </script>
 </body>
 </html>
